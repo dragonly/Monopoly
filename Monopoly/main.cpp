@@ -6,10 +6,13 @@
 //  Copyright © 2016 Dragonly. All rights reserved.
 //
 
-#include <iostream>
+#include "game.hpp"
+
+using namespace monopoly;
 
 int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
+    init();
+    gameLoop();
+    
     return 0;
 }

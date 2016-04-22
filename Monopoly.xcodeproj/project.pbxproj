@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		DAFEA4B41CCA461500461454 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DAFEA4B31CCA461500461454 /* main.cpp */; };
+		DAFEA4C01CCA46AC00461454 /* game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DAFEA4BE1CCA46AC00461454 /* game.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +26,8 @@
 /* Begin PBXFileReference section */
 		DAFEA4B01CCA461500461454 /* Monopoly */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Monopoly; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAFEA4B31CCA461500461454 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		DAFEA4BE1CCA46AC00461454 /* game.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = game.cpp; sourceTree = "<group>"; };
+		DAFEA4BF1CCA46AC00461454 /* game.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = game.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +61,8 @@
 			isa = PBXGroup;
 			children = (
 				DAFEA4B31CCA461500461454 /* main.cpp */,
+				DAFEA4BE1CCA46AC00461454 /* game.cpp */,
+				DAFEA4BF1CCA46AC00461454 /* game.hpp */,
 			);
 			path = Monopoly;
 			sourceTree = "<group>";
@@ -119,6 +124,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DAFEA4B41CCA461500461454 /* main.cpp in Sources */,
+				DAFEA4C01CCA46AC00461454 /* game.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
