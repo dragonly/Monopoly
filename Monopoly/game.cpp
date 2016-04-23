@@ -76,6 +76,11 @@ ostream& monopoly::operator <<(ostream& os, monopoly::Date& date) {
     return os;
 }
 
+ostream& monopoly::operator <<(ostream& os, Tool& tool) {
+    
+    return os;
+}
+
 ostream& monopoly::operator <<(ostream& os, Player& player) {
     os << GREEN << player.name << NC;
     return os;
@@ -88,7 +93,8 @@ void monopoly::Controler::nextTurn() {
 void monopoly::Controler::eval(char* cmd) {
     gs.error = false;
     if (strcmp(cmd, "t") == 0) {
-        
+        cout << "您现在拥有的道具如下:" << endl;
+        controler.showTools();
     }
     else if (strcmp(cmd, "s") == 0) {
         
@@ -105,6 +111,15 @@ void monopoly::Controler::eval(char* cmd) {
     }
     else {
         gs.error = true;
+    }
+}
+
+void monopoly::Controler::movePlayerWithAnimation(int delta) {
+    for (int i = 0; i < delta; i++) {
+        cout << i << endl;
+        movePlayer(1);
+        drawGame();
+        if (i != delta - 1) usleep(80000);
     }
 }
 
@@ -130,12 +145,10 @@ void monopoly::Controler::movePlayer(int delta) {
     player.y = curY;
 }
 
-void monopoly::Controler::movePlayerWithAnimation(int delta) {
-    for (int i = 0; i < delta; i++) {
-        cout << i << endl;
-        movePlayer(1);
-        drawGame();
-        if (i != delta - 1) usleep(80000);
+void monopoly::Controler::showTools() {
+    Player& player = gs.currentPlayer();
+    for (int i = 0; i < player.tools.size(); i++) {
+        cout << i << ". " << player.tools[i].type << "   ";
     }
 }
 
@@ -158,16 +171,6 @@ void monopoly::drawMap() {
     }
     cout << "╚═════════════════════════════════════════════════════════════════╝" << endl;
 }
-
-//void monopoly::drawPlayer() {
-//    int x, y, pos, i;
-//    pos = gs.currentPlayer().pos;
-//    x = gs.road[pos].pos.first;
-//    y = gs.road[pos].pos.second;
-//    for (i = 0; i < y; i++) {
-//        
-//    }
-//}
 
 void monopoly::drawPrompt() {
     Player& player = gs.currentPlayer();
