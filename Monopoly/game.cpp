@@ -14,7 +14,7 @@ using std::endl;
 using std::map;
 
 monopoly::Date::Date() {
-    d[0] = 2016; d[1] = 1; d[2] = 1;
+    d[0] = 2015; d[1] = 2; d[2] = 27;
 }
 
 bool monopoly::Date::isLeapYear() {
@@ -77,24 +77,16 @@ ostream& monopoly::operator <<(ostream& os, monopoly::Date& date) {
 }
 
 ostream& monopoly::operator <<(ostream& os, Player& player) {
-    os << player.name;
+    os << GREEN << player.name << NC;
     return os;
 }
 
-monopoly::Controler::Controler() {
-    players.push_back(Player("1P"));
-    players.push_back(Player("2P"));
-}
-
-monopoly::Player& monopoly::Controler::currentPlayer() {
-    return players[curPlayer];
-}
-
 void monopoly::Controler::nextTurn() {
-    curPlayer = (curPlayer + 1) % players.size();
+    gs.playerIndex = (gs.playerIndex + 1) % gs.players.size();
 }
 
 void monopoly::Controler::eval(char* cmd) {
+    gs.error = false;
     if (strcmp(cmd, "t") == 0) {
         
     }
@@ -105,41 +97,86 @@ void monopoly::Controler::eval(char* cmd) {
         
     }
     else if (strcmp(cmd, "r") == 0) {
-        
+        gs.lastRoll = static_cast<int>(rand() % 6) + 1;
+        controler.movePlayerWithAnimation(gs.lastRoll);
     }
     else if (strcmp(cmd, "gg") == 0) {
         
     }
     else {
-        
+        gs.error = true;
+    }
+}
+
+void monopoly::Controler::movePlayer(int delta) {
+    int curX, curY, preX, preY;
+//    string direction;
+    Player &player = gs.currentPlayer();
+    player.prePos = player.curPos;
+    if (player.direction) {
+        player.curPos = (player.curPos + delta) % gs.road.size();
+    }
+    else {
+        player.curPos = (player.curPos - delta) % gs.road.size();
+    }
+    curX = gs.road[player.curPos].pos.first;
+    curY = gs.road[player.curPos].pos.second;
+    preX = gs.road[player.prePos].pos.first;
+    preY = gs.road[player.prePos].pos.second;
+//    direction = player.direction ? string("R") : string("L");
+    gs.board[curX][curY] = Position(player.name, curX, curY);
+    gs.board[preX][preY] = Position(gs.initBoard[preX][preY]);
+    player.x = curX;
+    player.y = curY;
+}
+
+void monopoly::Controler::movePlayerWithAnimation(int delta) {
+    for (int i = 0; i < delta; i++) {
+        cout << i << endl;
+        movePlayer(1);
+        drawGame();
+        if (i != delta - 1) usleep(80000);
     }
 }
 
 void monopoly::init() {
+    srand(static_cast<unsigned>(std::time(0)));
+}
+
+void monopoly::clear() {
+    system("clear");
 }
 
 void monopoly::drawMap() {
-    int cur;
-    string name;
+    cout << "╔═════════════════════════════════════════════════════════════════╗" << endl;
     for(int i = 0; i < 10; i++) {
+        cout << "║   ";
         for (int j = 0; j < 20; j++) {
-            cur = gs.board[i][j];
-            if (cur == -1) {
-                cout << "   ";
-            }
-            else {
-                name = gs.road[cur].name;
-                cout << nameSymbolMap[name] << " ";
-            }
+            cout << posSymbolMap[gs.board[i][j].name];
         }
-        cout << endl;
+        cout << "  ║" << endl;
     }
+    cout << "╚═════════════════════════════════════════════════════════════════╝" << endl;
 }
 
+//void monopoly::drawPlayer() {
+//    int x, y, pos, i;
+//    pos = gs.currentPlayer().pos;
+//    x = gs.road[pos].pos.first;
+//    y = gs.road[pos].pos.second;
+//    for (i = 0; i < y; i++) {
+//        
+//    }
+//}
+
 void monopoly::drawPrompt() {
-    cout << "今天是" << monopoly::today << endl;
-    cout << "现在是玩家 " << GREEN << controler.currentPlayer() << NC << " 的回合, ";
-    cout << PURPLE << (controler.currentPlayer().direction ? "顺" : "逆") << NC << "时针" << endl;
+    Player& player = gs.currentPlayer();
+    string posName = gs.initBoard[player.x][player.y].name;
+    
+    cout << "今天是" << gs.today << endl;
+    cout << "现在是玩家 " << player << " 的回合, "
+         << PURPLE << (gs.currentPlayer().direction ? "顺" : "逆") << NC << "时针, "
+         << "当前位置" << posSymbolMap[posName] << endl;
     cout << "你可以做:" << endl
          << "t(tool) - 道具列表" << endl
          << "s(step) - 查看前后若干步的具体信息" << endl
@@ -149,6 +186,7 @@ void monopoly::drawPrompt() {
 }
 
 void monopoly::drawGame() {
+    clear();
     drawMap();
     drawPrompt();
 }
@@ -156,26 +194,39 @@ void monopoly::drawGame() {
 void monopoly::gameLoop() {
     char cmd[10] = "init";
     while (true) {
-        system("clear");
-        
-        drawGame();
         controler.eval(cmd);
+        drawGame();
         
-        cout << endl << PURPLE << cmd << NC << endl;
+        if (gs.error)
+            cout << endl << RED << gs.errMsg << NC << endl;
+        if (gs.lastRoll != -1) cout << "你刚刚掷出了 " << LCYAN << gs.lastRoll << NC << endl;
         cout << "> ";
         cin >> cmd;
+        gs.today.nextDay();
     }
 }
 
+monopoly::Player& monopoly::GameState::currentPlayer() {
+    return players[playerIndex];
+}
+
 monopoly::GameState::GameState() {
+    // convert road to board
     int i, j, k;
-    for(i = 0; i < 10; i++)
-        for(j = 0; j < 20; j++)
-            board[i][j] = -1;
-    
+    for(i = 0; i < 10; i++) {
+        for(j = 0; j < 20; j++) {
+            initBoard[i][j] = Position("void", i, j);
+            board[i][j] = Position("void", i, j);
+        }
+    }
     for (k = 0; k < road.size(); k++) {
         i = road[k].pos.first;
         j = road[k].pos.second;
-        board[i][j] = k;
+        initBoard[i][j] = Position(road[k]);
+        board[i][j] = Position(road[k]);
     }
+    board[0][0] = Position("player1", 0, 0);
+    
+    players.push_back(Player("player1"));
+    players.push_back(Player("palyer2"));
 }
