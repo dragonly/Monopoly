@@ -100,12 +100,16 @@ namespace monopoly {
         int x, y;
         vector<Tool> tools;
         
-        Player(string n)
-        : name(n), direction(true), curPos(0), prePos(0), x(0), y(0)
+        Player(string name)
+        : name(name), direction(true), curPos(0), prePos(0), x(0), y(0)
         {
         }
     };
     ostream& operator <<(ostream&, Player&);
+    
+    enum class GS {
+        normal, tool, step, info
+    };
     
     class GameState {
     public:
@@ -126,7 +130,9 @@ namespace monopoly {
             {"lottery", 2, 1}, {"land", 2, 0}, {"land", 1, 0}};
         Position initBoard[10][20];
         Position board[10][20];  // index in road, -1 P1, -2 P2, -9 null
+        GS state;
         bool error = false;
+        string message = "";
         string errMsg = string(RED) + string("什么鬼 _(:з」∠)_") + string(NC);
         Date today;
         vector<Player> players;
@@ -137,13 +143,15 @@ namespace monopoly {
         Player &currentPlayer();
     };
     
-    class Controler {
+    class Controller {
     public:
         void nextTurn();
         void eval(char*);
         void movePlayer(int);
         void movePlayerWithAnimation(int);
         void showTools();
+        void popCurrentPlayer();
+        void fixPosition(int x, int y);
     };
     
     void init();
@@ -168,7 +176,7 @@ namespace monopoly {
         {"palyer2Land", LBLUE+string("♧  ")+NC},
         {"void", "   "}};
     static GameState gs;
-    static Controler controler;
+    static Controller controller;
 }
 
 #endif /* game_hpp */

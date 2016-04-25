@@ -86,46 +86,90 @@ ostream& monopoly::operator <<(ostream& os, Player& player) {
     return os;
 }
 
-void monopoly::Controler::nextTurn() {
+void monopoly::Controller::nextTurn() {
+    // vector 超出下标不会报错而是 undefined behavior = =, 异常坑
     gs.playerIndex = (gs.playerIndex + 1) % gs.players.size();
 }
 
-void monopoly::Controler::eval(char* cmd) {
+void monopoly::Controller::eval(char* cmd) {
     gs.error = false;
-    if (strcmp(cmd, "t") == 0) {
-        cout << "您现在拥有的道具如下:" << endl;
-        controler.showTools();
+    switch (gs.state){
+        // return makes a good one, break makes a bad one
+        case GS::normal:
+        {
+            if (strcmp(cmd, "t") == 0) {
+                gs.state = GS::tool;
+            }
+            else if (strcmp(cmd, "s") == 0) {
+                gs.state = GS::step;
+            }
+            else if (strcmp(cmd, "i") == 0) {
+                gs.state = GS::info;
+            }
+            else if (strcmp(cmd, "r") == 0) {
+                gs.lastRoll = static_cast<int>(rand() % 6) + 1;
+                controller.movePlayerWithAnimation(gs.lastRoll);
+                controller.nextTurn();
+            }
+            else if (strcmp(cmd, "gg") == 0) {
+                controller.popCurrentPlayer();
+            }
+            else {
+                gs.errMsg = "什么鬼 _(:з」∠)_";
+                break; // error
+            }
+            return;
+        }
+        case GS::tool:
+        {
+            size_t count = gs.currentPlayer().tools.size();
+            if (strlen(cmd) == 1 && cmd[0] >= 48/*0*/ && cmd[0] < 48 + count) {
+                gs.message = string("选择工具") + cmd + gs.currentPlayer().tools[atoi(cmd)].type;
+                gs.state = GS::normal;
+                return;
+            }
+            else {
+                gs.errMsg = RED + "没有这个工具 :(" + NC;
+                break; // error
+            }
+        }
+        case GS::info:
+        {
+            return;
+        }
+        case GS::step:
+        {
+            gs.message = "请输入步数(-9 ~ 9), 负号表示反向于前进方向: ";
+            int s = atoi(cmd);
+            if (s > -10 && s < 10){
+                int pos = (gs.currentPlayer().curPos + s) % gs.road.size();
+                gs.message = "玩家" + LBLUE;
+                if (s > 0) gs.message += "前";
+                else       gs.message += "后";
+                gs.message += NC + std::to_string(abs(s)) + "步是";
+                gs.message += posSymbolMap[gs.road[pos].name];
+                gs.state = GS::normal;
+                return;
+            }
+            else {
+                gs.errMsg = RED + "无效的步数" + NC;
+                break; // error
+            }
+        }
     }
-    else if (strcmp(cmd, "s") == 0) {
-        
-    }
-    else if (strcmp(cmd, "i") == 0) {
-        
-    }
-    else if (strcmp(cmd, "r") == 0) {
-        gs.lastRoll = static_cast<int>(rand() % 6) + 1;
-        controler.movePlayerWithAnimation(gs.lastRoll);
-    }
-    else if (strcmp(cmd, "gg") == 0) {
-        
-    }
-    else {
-        gs.error = true;
-    }
+    gs.error = true;
 }
 
-void monopoly::Controler::movePlayerWithAnimation(int delta) {
+void monopoly::Controller::movePlayerWithAnimation(int delta) {
     for (int i = 0; i < delta; i++) {
-        cout << i << endl;
         movePlayer(1);
         drawGame();
         if (i != delta - 1) usleep(80000);
     }
 }
 
-void monopoly::Controler::movePlayer(int delta) {
+void monopoly::Controller::movePlayer(int delta) {
     int curX, curY, preX, preY;
-//    string direction;
     Player &player = gs.currentPlayer();
     player.prePos = player.curPos;
     if (player.direction) {
@@ -138,17 +182,35 @@ void monopoly::Controler::movePlayer(int delta) {
     curY = gs.road[player.curPos].pos.second;
     preX = gs.road[player.prePos].pos.first;
     preY = gs.road[player.prePos].pos.second;
-//    direction = player.direction ? string("R") : string("L");
     gs.board[curX][curY] = Position(player.name, curX, curY);
     gs.board[preX][preY] = Position(gs.initBoard[preX][preY]);
     player.x = curX;
     player.y = curY;
+    controller.fixPosition(preX, preY);
 }
 
-void monopoly::Controler::showTools() {
+void monopoly::Controller::showTools() {
     Player& player = gs.currentPlayer();
+    cout << "当前拥有道具:" << endl;
     for (int i = 0; i < player.tools.size(); i++) {
         cout << i << ". " << player.tools[i].type << "   ";
+    }
+}
+
+void monopoly::Controller::popCurrentPlayer() {
+    vector<Player>::iterator it = gs.players.begin();
+    for (int i = 0; i < gs.playerIndex; i++) {
+        it++;
+    }
+    gs.playerIndex = (gs.playerIndex + 1) % gs.players.size();
+    gs.players.erase(it);
+}
+
+void monopoly::Controller::fixPosition(int x, int y) {
+    for (int i = 0; i < gs.players.size(); i++) {
+        if (gs.players[i].x == x && gs.players[i].y == y) {
+            gs.board[x][y] = Position(gs.players[i].name, x, y);
+        }
     }
 }
 
@@ -194,21 +256,6 @@ void monopoly::drawGame() {
     drawPrompt();
 }
 
-void monopoly::gameLoop() {
-    char cmd[10] = "init";
-    while (true) {
-        controler.eval(cmd);
-        drawGame();
-        
-        if (gs.error)
-            cout << endl << RED << gs.errMsg << NC << endl;
-        if (gs.lastRoll != -1) cout << "你刚刚掷出了 " << LCYAN << gs.lastRoll << NC << endl;
-        cout << "> ";
-        cin >> cmd;
-        gs.today.nextDay();
-    }
-}
-
 monopoly::Player& monopoly::GameState::currentPlayer() {
     return players[playerIndex];
 }
@@ -231,5 +278,46 @@ monopoly::GameState::GameState() {
     board[0][0] = Position("player1", 0, 0);
     
     players.push_back(Player("player1"));
-    players.push_back(Player("palyer2"));
+    players.push_back(Player("player2"));
+    
+    players[0].tools.push_back(Tool("红卡"));
+    players[0].tools.push_back(Tool("福神卡"));
+}
+
+void monopoly::gameLoop() {
+    char cmd[10] = "init";
+    while (true) {
+        controller.eval(cmd);
+        drawGame();
+        switch (gs.state) {
+            case GS::normal:
+                if (gs.players.size() == 1) {
+                    cout << RED << "= = = = = GAME OVER = = = = =" << endl;
+                    cout << "玩家" << gs.currentPlayer() << RED << "获胜" << endl;
+                    return;
+                }
+                break;
+            case GS::tool:
+                cout << endl;
+                controller.showTools();
+                cout << endl;
+                break;
+            case GS::info:
+                break;
+            case GS::step:
+                break;
+        }
+        cout << gs.message << endl;
+        gs.message = "";
+        if (gs.error) {
+            cout << endl << RED << gs.errMsg << NC << endl;
+        }
+        if (gs.lastRoll != -1) {
+            cout << "你刚刚掷出了 " << LCYAN << gs.lastRoll << NC << endl;
+            gs.lastRoll = -1;
+        }
+        cout << "> ";
+        cin >> cmd;
+        gs.today.nextDay();
+    }
 }
