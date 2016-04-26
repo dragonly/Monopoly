@@ -12,6 +12,7 @@ using std::cin;
 using std::cout;
 using std::endl;
 using std::map;
+using std::to_string;
 
 monopoly::Date::Date() {
     d[0] = 2015; d[1] = 2; d[2] = 27;
@@ -101,18 +102,63 @@ void monopoly::Controller::eval(char* cmd) {
                 gs.state = GS::tool;
             }
             else if (strcmp(cmd, "s") == 0) {
+                gs.message += "请输入步数(-9 ~ 9), 负号表示反向于前进方向: (输入 " + RED + "x" + NC + " 返回)";
                 gs.state = GS::step;
             }
             else if (strcmp(cmd, "i") == 0) {
-                gs.state = GS::info;
+                Player &player = gs.currentPlayer();
+                gs.message += "玩家 " + posSymbolMap[player.name] + "信息:";
+                gs.message += "\n现金: ￥" + to_string(player.cash);
+                gs.message += "\n存款: ￥" + to_string(player.deposit);
             }
             else if (strcmp(cmd, "r") == 0) {
                 gs.lastRoll = static_cast<int>(rand() % 6) + 1;
+                gs.lastRoll = 5;
                 controller.movePlayerWithAnimation(gs.lastRoll);
-                controller.nextTurn();
+                controller.handleEvents();
             }
             else if (strcmp(cmd, "gg") == 0) {
                 controller.popCurrentPlayer();
+            }
+            else if (strcmp(cmd, "y") == 0) {
+                Player &player = gs.currentPlayer();
+                int x = gs.road[player.curPos].pos.first;
+                int y = gs.road[player.curPos].pos.second;
+                Land &displayLand = gs.displayBoard[x][y];
+                Land &logicLand = gs.logicBoard[x][y];
+                if (logicLand.owner == "none") { // 无主之地
+                    if (player.cash < 200) {
+                        gs.errMsg = "现金不足";
+                        controller.nextTurn();
+                        break;
+                    }
+                    else {
+                        logicLand.owner = displayLand.owner = player.name;
+                        displayLand.name = player.name + "Land";
+                        player.cash -= 200;
+                    }
+                }
+                else if (logicLand.owner == player.name) { // 升级房屋
+                    if (player.cash < 200) {
+                        gs.errMsg = "现金不足";
+                        controller.nextTurn();
+                        break;
+                    }
+                    else if (logicLand.level == logicLand.maxLevel) {
+                        gs.errMsg = "房屋达到最高等级";
+                        controller.nextTurn();
+                        break;
+                    }
+                    else {
+                        player.cash -= 200;
+                        logicLand.level += 1;
+                    }
+                }
+                controller.nextTurn();
+            }
+            else if (strcmp(cmd, "n") == 0) {
+                gs.message += "取消操作\n";
+                controller.nextTurn();
             }
             else {
                 gs.errMsg = "什么鬼 _(:з」∠)_";
@@ -122,9 +168,10 @@ void monopoly::Controller::eval(char* cmd) {
         }
         case GS::tool:
         {
-            size_t count = gs.currentPlayer().tools.size();
+            Player& player = gs.currentPlayer();
+            size_t count = player.tools.size();
             if (strlen(cmd) == 1 && cmd[0] >= 48/*0*/ && cmd[0] < 48 + count) {
-                gs.message = string("选择工具") + cmd + gs.currentPlayer().tools[atoi(cmd)].type;
+                gs.message = string("你选择了道具: ") + cmd + player.tools[atoi(cmd)].type;
                 gs.state = GS::normal;
                 return;
             }
@@ -133,21 +180,22 @@ void monopoly::Controller::eval(char* cmd) {
                 break; // error
             }
         }
-        case GS::info:
-        {
-            return;
-        }
         case GS::step:
         {
-            gs.message = "请输入步数(-9 ~ 9), 负号表示反向于前进方向: ";
+            if (strcmp(cmd, "x") == 0) {
+                gs.state = GS::normal;
+                return;
+            }
             int s = atoi(cmd);
             if (s > -10 && s < 10){
                 int pos = (gs.currentPlayer().curPos + s) % gs.road.size();
-                gs.message = "玩家" + LBLUE;
+                gs.message += "玩家" + LBLUE;
                 if (s > 0) gs.message += "前";
                 else       gs.message += "后";
-                gs.message += NC + std::to_string(abs(s)) + "步是";
-                gs.message += posSymbolMap[gs.road[pos].name];
+                gs.message += NC + to_string(abs(s)) + "步是";
+                int x = gs.road[pos].pos.first;
+                int y = gs.road[pos].pos.second;
+                gs.message += posSymbolMap[gs.logicBoard[x][y].name];
                 gs.state = GS::normal;
                 return;
             }
@@ -182,11 +230,11 @@ void monopoly::Controller::movePlayer(int delta) {
     curY = gs.road[player.curPos].pos.second;
     preX = gs.road[player.prePos].pos.first;
     preY = gs.road[player.prePos].pos.second;
-    gs.board[curX][curY] = Position(player.name, curX, curY);
-    gs.board[preX][preY] = Position(gs.initBoard[preX][preY]);
+    gs.displayBoard[curX][curY] = Land(player.name, curX, curY, gs.logicBoard[curX][curY].street);
+    gs.displayBoard[preX][preY] = Land(gs.logicBoard[preX][preY]);
     player.x = curX;
     player.y = curY;
-    controller.fixPosition(preX, preY);
+    controller.fixLand(preX, preY);
 }
 
 void monopoly::Controller::showTools() {
@@ -202,15 +250,61 @@ void monopoly::Controller::popCurrentPlayer() {
     for (int i = 0; i < gs.playerIndex; i++) {
         it++;
     }
-    gs.playerIndex = (gs.playerIndex + 1) % gs.players.size();
+    // erase a player will make the next player the currentPlayer
+    // if last player quit, we should make the 0 indexed player the currentPlayer
+    if (gs.playerIndex == gs.players.size() - 1) {
+        gs.playerIndex = 0;
+    }
     gs.players.erase(it);
+    if (gs.players.size() == 1) {
+        gs.gameover = true;
+    }
 }
 
-void monopoly::Controller::fixPosition(int x, int y) {
+void monopoly::Controller::fixLand(int x, int y) {
     for (int i = 0; i < gs.players.size(); i++) {
         if (gs.players[i].x == x && gs.players[i].y == y) {
-            gs.board[x][y] = Position(gs.players[i].name, x, y);
+            gs.displayBoard[x][y] = Land(gs.players[i].name, x, y, gs.logicBoard[x][y].street);
         }
+    }
+}
+
+void monopoly::Controller::handleEvents() {
+    Player &player = gs.currentPlayer();
+    int x = gs.road[player.curPos].pos.first;
+    int y = gs.road[player.curPos].pos.second;
+    Land &logicLand = gs.logicBoard[x][y];
+    // TODO: 完善所有土地类型事件
+    switch (landMap[logicLand.name]) {
+        case LandName::land:
+        {
+            if (logicLand.owner == "none") { // 无主之地
+                gs.message += "当前土地闲置, 是否花费 ￥200 购买?(y/n)";
+            }
+            else if (logicLand.owner == player.name) { // 升级房屋
+                gs.message += "房屋当前等级" + RED + to_string(logicLand.level) + NC;
+                gs.message += "\n是否花费 ￥200 升级?(y/n)";
+            }
+            else {
+                int penalty = logicLand.basePrice * logicLand.level;
+                player.cash -= penalty;
+                gs.getPlayerByName(logicLand.owner).cash += penalty;
+                if (player.cash < 0) { // 玩家现金不够, 用银行存款抵扣
+                    player.deposit += player.cash;
+                    player.cash = 0;
+                }
+                gs.message += RED + "玩家" + GREEN + player.name + RED + "交过路费 ￥" + to_string(penalty) + NC;
+                if (player.deposit < 0) {
+                    gs.message =  RED + "玩家" + GREEN + player.name + RED + "破产\n" + NC;
+                    controller.popCurrentPlayer();
+                }
+                controller.nextTurn();
+            }
+        }
+            break;
+            
+        default:
+            break;
     }
 }
 
@@ -227,16 +321,16 @@ void monopoly::drawMap() {
     for(int i = 0; i < 10; i++) {
         cout << "║   ";
         for (int j = 0; j < 20; j++) {
-            cout << posSymbolMap[gs.board[i][j].name];
+            cout << posSymbolMap[gs.displayBoard[i][j].name];
         }
         cout << "  ║" << endl;
     }
     cout << "╚═════════════════════════════════════════════════════════════════╝" << endl;
 }
 
-void monopoly::drawPrompt() {
+void monopoly::drawMenu() {
     Player& player = gs.currentPlayer();
-    string posName = gs.initBoard[player.x][player.y].name;
+    string posName = gs.logicBoard[player.x][player.y].name;
     
     cout << "今天是" << gs.today << endl;
     cout << "现在是玩家 " << player << " 的回合, "
@@ -253,7 +347,16 @@ void monopoly::drawPrompt() {
 void monopoly::drawGame() {
     clear();
     drawMap();
-    drawPrompt();
+    drawMenu();
+    
+    switch (gs.state) {
+        case GS::tool:
+        {
+            controller.showTools();
+        }
+        default:
+            break;
+    }
 }
 
 monopoly::Player& monopoly::GameState::currentPlayer() {
@@ -265,17 +368,17 @@ monopoly::GameState::GameState() {
     int i, j, k;
     for(i = 0; i < 10; i++) {
         for(j = 0; j < 20; j++) {
-            initBoard[i][j] = Position("void", i, j);
-            board[i][j] = Position("void", i, j);
+            logicBoard[i][j] = Land("void", i, j, -1);
+            displayBoard[i][j] = Land("void", i, j, -1);
         }
     }
     for (k = 0; k < road.size(); k++) {
         i = road[k].pos.first;
         j = road[k].pos.second;
-        initBoard[i][j] = Position(road[k]);
-        board[i][j] = Position(road[k]);
+        logicBoard[i][j] = Land(road[k]);
+        displayBoard[i][j] = Land(road[k]);
     }
-    board[0][0] = Position("player1", 0, 0);
+    displayBoard[0][0] = Land("player1", 0, 0, 0);
     
     players.push_back(Player("player1"));
     players.push_back(Player("player2"));
@@ -284,31 +387,28 @@ monopoly::GameState::GameState() {
     players[0].tools.push_back(Tool("福神卡"));
 }
 
+monopoly::Player &monopoly::GameState::getPlayerByName(string name) {
+    for (int i = 0; i < players.size(); i++) {
+        if (players[i].name == name) {
+            return players[i];
+        }
+    }
+    return players[0]; // this is bad :( , but no fix for now
+}
+
 void monopoly::gameLoop() {
-    char cmd[10] = "init";
+    char cmd[10] = "i";
     while (true) {
         controller.eval(cmd);
         drawGame();
-        switch (gs.state) {
-            case GS::normal:
-                if (gs.players.size() == 1) {
-                    cout << RED << "= = = = = GAME OVER = = = = =" << endl;
-                    cout << "玩家" << gs.currentPlayer() << RED << "获胜" << endl;
-                    return;
-                }
-                break;
-            case GS::tool:
-                cout << endl;
-                controller.showTools();
-                cout << endl;
-                break;
-            case GS::info:
-                break;
-            case GS::step:
-                break;
+        if (gs.gameover) {
+            cout << RED << "= = = = = GAME OVER = = = = =" << endl;
+            cout << "玩家" << gs.currentPlayer() << RED << "获胜" << endl;
+            return;
         }
+        
         cout << gs.message << endl;
-        gs.message = "";
+        gs.message = "\n";
         if (gs.error) {
             cout << endl << RED << gs.errMsg << NC << endl;
         }
