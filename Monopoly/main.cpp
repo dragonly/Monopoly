@@ -6,13 +6,12 @@
 //  Copyright © 2016 Dragonly. All rights reserved.
 //
 
-#include "game.hpp"
+#include "GameContext.hpp"
 
 using namespace monopoly;
 
 int main(int argc, const char * argv[]) {
-    init();
-    gameLoop();
-    
+    GameContext gameContext;
+    gameContext.gameLoop();
     return 0;
 }

@@ -7,8 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DA44D1771CD09B130059D5BA /* Date.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DA44D1751CD09B130059D5BA /* Date.cpp */; };
+		DA44D17A1CD09C3D0059D5BA /* Land.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DA44D1781CD09C3D0059D5BA /* Land.cpp */; };
+		DA44D17D1CD09D3B0059D5BA /* Tool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DA44D17B1CD09D3B0059D5BA /* Tool.cpp */; };
+		DA44D1801CD09E670059D5BA /* Player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DA44D17E1CD09E670059D5BA /* Player.cpp */; };
+		DA44D1851CD09FCA0059D5BA /* GameState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DA44D1831CD09FCA0059D5BA /* GameState.cpp */; };
+		DA44D1881CD0A0C10059D5BA /* Controller.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DA44D1861CD0A0C10059D5BA /* Controller.cpp */; };
+		DA44D18B1CD0A11C0059D5BA /* GameContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DA44D1891CD0A11C0059D5BA /* GameContext.cpp */; };
 		DAFEA4B41CCA461500461454 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DAFEA4B31CCA461500461454 /* main.cpp */; };
-		DAFEA4C01CCA46AC00461454 /* game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DAFEA4BE1CCA46AC00461454 /* game.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -24,10 +30,23 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		DA44D1751CD09B130059D5BA /* Date.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Date.cpp; sourceTree = "<group>"; };
+		DA44D1761CD09B130059D5BA /* Date.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Date.hpp; sourceTree = "<group>"; };
+		DA44D1781CD09C3D0059D5BA /* Land.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Land.cpp; sourceTree = "<group>"; };
+		DA44D1791CD09C3D0059D5BA /* Land.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Land.hpp; sourceTree = "<group>"; };
+		DA44D17B1CD09D3B0059D5BA /* Tool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Tool.cpp; sourceTree = "<group>"; };
+		DA44D17C1CD09D3B0059D5BA /* Tool.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Tool.hpp; sourceTree = "<group>"; };
+		DA44D17E1CD09E670059D5BA /* Player.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Player.cpp; sourceTree = "<group>"; };
+		DA44D17F1CD09E670059D5BA /* Player.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Player.hpp; sourceTree = "<group>"; };
+		DA44D1821CD09F8F0059D5BA /* Color.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Color.hpp; sourceTree = "<group>"; };
+		DA44D1831CD09FCA0059D5BA /* GameState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameState.cpp; sourceTree = "<group>"; };
+		DA44D1841CD09FCA0059D5BA /* GameState.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = GameState.hpp; sourceTree = "<group>"; };
+		DA44D1861CD0A0C10059D5BA /* Controller.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Controller.cpp; sourceTree = "<group>"; };
+		DA44D1871CD0A0C10059D5BA /* Controller.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Controller.hpp; sourceTree = "<group>"; };
+		DA44D1891CD0A11C0059D5BA /* GameContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameContext.cpp; sourceTree = "<group>"; };
+		DA44D18A1CD0A11C0059D5BA /* GameContext.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = GameContext.hpp; sourceTree = "<group>"; };
 		DAFEA4B01CCA461500461454 /* Monopoly */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Monopoly; sourceTree = BUILT_PRODUCTS_DIR; };
 		DAFEA4B31CCA461500461454 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		DAFEA4BE1CCA46AC00461454 /* game.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = game.cpp; sourceTree = "<group>"; };
-		DAFEA4BF1CCA46AC00461454 /* game.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = game.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,9 +79,22 @@
 		DAFEA4B21CCA461500461454 /* Monopoly */ = {
 			isa = PBXGroup;
 			children = (
+				DA44D1891CD0A11C0059D5BA /* GameContext.cpp */,
+				DA44D18A1CD0A11C0059D5BA /* GameContext.hpp */,
+				DA44D1821CD09F8F0059D5BA /* Color.hpp */,
 				DAFEA4B31CCA461500461454 /* main.cpp */,
-				DAFEA4BE1CCA46AC00461454 /* game.cpp */,
-				DAFEA4BF1CCA46AC00461454 /* game.hpp */,
+				DA44D1751CD09B130059D5BA /* Date.cpp */,
+				DA44D1761CD09B130059D5BA /* Date.hpp */,
+				DA44D1781CD09C3D0059D5BA /* Land.cpp */,
+				DA44D1791CD09C3D0059D5BA /* Land.hpp */,
+				DA44D17B1CD09D3B0059D5BA /* Tool.cpp */,
+				DA44D17C1CD09D3B0059D5BA /* Tool.hpp */,
+				DA44D17E1CD09E670059D5BA /* Player.cpp */,
+				DA44D17F1CD09E670059D5BA /* Player.hpp */,
+				DA44D1831CD09FCA0059D5BA /* GameState.cpp */,
+				DA44D1841CD09FCA0059D5BA /* GameState.hpp */,
+				DA44D1861CD0A0C10059D5BA /* Controller.cpp */,
+				DA44D1871CD0A0C10059D5BA /* Controller.hpp */,
 			);
 			path = Monopoly;
 			sourceTree = "<group>";
@@ -123,8 +155,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DA44D17A1CD09C3D0059D5BA /* Land.cpp in Sources */,
+				DA44D1771CD09B130059D5BA /* Date.cpp in Sources */,
+				DA44D1801CD09E670059D5BA /* Player.cpp in Sources */,
+				DA44D1881CD0A0C10059D5BA /* Controller.cpp in Sources */,
 				DAFEA4B41CCA461500461454 /* main.cpp in Sources */,
-				DAFEA4C01CCA46AC00461454 /* game.cpp in Sources */,
+				DA44D1851CD09FCA0059D5BA /* GameState.cpp in Sources */,
+				DA44D17D1CD09D3B0059D5BA /* Tool.cpp in Sources */,
+				DA44D18B1CD0A11C0059D5BA /* GameContext.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
