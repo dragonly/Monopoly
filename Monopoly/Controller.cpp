@@ -49,47 +49,8 @@ namespace monopoly {
                 else if (strcmp(cmd, "gg") == 0) {
                     popCurrentPlayer();
                 }
-                else if (strcmp(cmd, "y") == 0) {
-                    Player &player = gs.currentPlayer();
-                    int x = gs.road[player.curPos].pos.first;
-                    int y = gs.road[player.curPos].pos.second;
-                    Land &land = gs.board[x][y];
-                    if (land.owner == "none") { // 无主之地
-                        if (player.cash < 200) {
-                            gs.errMsg = "现金不足";
-                            nextTurn();
-                            break;
-                        }
-                        else {
-                            land.owner = player.name;
-                            land.name = player.name + "Land";
-                            player.cash -= 200;
-                        }
-                    }
-                    else if (land.owner == player.name) { // 升级房屋
-                        if (player.cash < 200) {
-                            gs.errMsg = "现金不足";
-                            nextTurn();
-                            break;
-                        }
-                        else if (land.level == land.maxLevel) {
-                            gs.errMsg = "房屋达到最高等级";
-                            nextTurn();
-                            break;
-                        }
-                        else {
-                            player.cash -= 200;
-                            land.level += 1;
-                        }
-                    }
-                    nextTurn();
-                }
-                else if (strcmp(cmd, "n") == 0) {
-                    gs.message += "取消操作\n";
-                    nextTurn();
-                }
                 else {
-                    gs.errMsg = "什么鬼 _(:з」∠)_";
+                    gs.errMsg = RED + "什么鬼 _(:з」∠)_" + NC;
                     break; // error
                 }
                 return;
@@ -130,6 +91,68 @@ namespace monopoly {
                 else {
                     gs.errMsg = RED + "无效的步数" + NC;
                     break; // error
+                }
+            }
+            case GS::buy:
+            {
+                if (strcmp(cmd, "y") == 0) {
+                    Player &player = gs.currentPlayer();
+                    int x = gs.road[player.curPos].pos.first;
+                    int y = gs.road[player.curPos].pos.second;
+                    Land &land = gs.board[x][y];
+                    
+                    // 只能在 land 上进行下列行为
+                    if (land.landType == LandType::land) {
+                        nextTurn();
+                        gs.state = GS::normal;
+                        if (land.owner == "none") { // 无主之地
+                            if (player.cash < 200) {
+                                gs.errMsg = "现金不足";
+                                break;
+                            }
+                            else {
+                                land.owner = player.name;
+                                land.name = player.name + "Land";
+                                player.cash -= 200;
+                            }
+                        }
+                        else if (land.owner == player.name) { // 升级房屋
+                            if (player.cash < 200) {
+                                gs.errMsg = "现金不足";
+                                break;
+                            }
+                            else if (land.level == land.maxLevel) {
+                                gs.errMsg = "房屋达到最高等级";
+                                break;
+                            }
+                            else {
+                                player.cash -= 200;
+                                land.level += 1;
+                            }
+                        }
+                    }
+                    return;
+                }
+                else if (strcmp(cmd, "n") == 0) {
+                    gs.message += "取消操作\n";
+                    nextTurn();
+                    gs.state = GS::normal;
+                    return;
+                }
+                else {
+                    gs.errMsg = RED + "什么鬼 _(:з」∠)_" + NC;
+                    
+                    Player &player = gs.currentPlayer();
+                    int x = gs.road[player.curPos].pos.first;
+                    int y = gs.road[player.curPos].pos.second;
+                    Land &land = gs.board[x][y];
+                    if (land.owner == "none") {
+                        gs.message += "当前土地闲置, 是否花费 ￥200 购买?(y/n)";
+                    }
+                    else {
+                        gs.message += "是否花费 ￥200 升级?(y/n)";
+                    }
+                    break;
                 }
             }
         }
@@ -225,15 +248,17 @@ namespace monopoly {
         int y = gs.road[player.curPos].pos.second;
         Land &land = gs.board[x][y];
         // TODO: 完善所有土地类型事件
-        switch (gc.landMap[land.name]) {
+        switch (land.landType) {
             case LandType::land:
             {
                 if (land.owner == "none") { // 无主之地
                     gs.message += "当前土地闲置, 是否花费 ￥200 购买?(y/n)";
+                    gs.state = GS::buy;
                 }
                 else if (land.owner == player.name) { // 升级房屋
                     gs.message += "房屋当前等级" + RED + to_string(land.level) + NC;
                     gs.message += "\n是否花费 ￥200 升级?(y/n)";
+                    gs.state = GS::buy;
                 }
                 else {
                     int penalty = land.basePrice * land.level;
@@ -252,7 +277,41 @@ namespace monopoly {
                 }
             }
                 break;
+            case LandType::toolStore:
+            {
                 
+            }
+                break;
+            case LandType::bank:
+            {
+                
+            }
+                break;
+            case LandType::news:
+            {
+                
+            }
+                break;
+            case LandType::gift:
+            {
+                
+            }
+                break;
+            case LandType::blank:
+            {
+                
+            }
+                break;
+            case LandType::lottery:
+            {
+                
+            }
+                break;
+            case LandType::coupon:
+            {
+                
+            }
+                break;
             default:
                 break;
         }

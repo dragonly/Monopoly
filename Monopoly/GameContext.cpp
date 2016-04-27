@@ -95,7 +95,19 @@ namespace monopoly {
     
     void GameContext::drawMenu() {
         Player& player = gs.currentPlayer();
-        string posName = gs.board[player.x][player.y].name;
+        Land& land = gs.board[player.x][player.y];
+        string posName;
+        if (land.landType == LandType::land) {
+            if (land.owner == "none") {
+                posName = "land";
+            }
+            else {
+                posName = land.owner + "Land";
+            }
+        }
+        else {
+            posName = IlandMap[land.landType];
+        }
         
         cout << "今天是" << gs.today << endl;
         cout << "现在是玩家 " << player << " 的回合, "
@@ -135,16 +147,15 @@ namespace monopoly {
                 cout << "玩家" << gs.currentPlayer() << RED << "获胜" << endl;
                 return;
             }
-            
-            cout << gs.message << endl;
-            gs.message = "\n";
             if (gs.error) {
                 cout << endl << RED << gs.errMsg << NC << endl;
             }
             if (gs.lastRoll != -1) {
-                cout << "你刚刚掷出了 " << LCYAN << gs.lastRoll << NC << endl;
+                cout << "玩家" + GREEN + gs.currentPlayer().name + NC + "刚刚掷出了 " << LCYAN << gs.lastRoll << NC << endl;
                 gs.lastRoll = -1;
             }
+            cout << gs.message << endl;
+            gs.message = "\n";
             cout << "> ";
             cin >> cmd;
             gs.today.nextDay();

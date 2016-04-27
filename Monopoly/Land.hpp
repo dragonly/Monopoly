@@ -16,7 +16,7 @@ using std::pair;
 namespace monopoly {
     
     enum class LandType {
-        land, toolStore, bank, news, gift, blank, lottery, coupon, player1, player2, player1Land, player2Land, VOID
+        land, toolStore, bank, news, gift, blank, lottery, coupon, VOID
     };
     
     class Land {
