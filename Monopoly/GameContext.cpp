@@ -153,15 +153,7 @@ namespace monopoly {
         clear();
         drawMap();
         drawMenu();
-        
-        switch (gs.state) {
-            case GS::tool:
-            {
-                controller->showTools();
-            }
-            default:
-                break;
-        }
+        cout << static_cast<int>(gs.state) << endl;
     }
     
     void GameContext::gameLoop() {

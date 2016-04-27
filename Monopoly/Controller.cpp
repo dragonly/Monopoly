@@ -42,7 +42,7 @@ namespace monopoly {
 //                }
                 else if (strcmp(cmd, "r") == 0) {
                     gs.lastRoll = static_cast<int>(rand() % 6) + 1;
-                    //                    gs.lastRoll = 5; // TODO: remove
+                    gs.lastRoll = 17; // TODO: remove
                     movePlayerWithAnimation(gs.lastRoll);
                     handleEvents();
                 }
@@ -154,6 +154,30 @@ namespace monopoly {
                     }
                     break;
                 }
+            }
+            case GS::bank:
+            {
+                int save = atoi(cmd);
+                Player& player = gs.currentPlayer();
+                if (save > 0 && save > player.cash) {
+                    gs.errMsg = "现金不足";
+                    break;
+                }
+                else if (save < 0 && -save > player.deposit) {
+                    gs.errMsg = "存款不足";
+                    break;
+                }
+                else {
+                    player.cash -= save;
+                    player.deposit += save;
+                    gs.state = GS::normal;
+                    nextTurn();
+                    return;
+                }
+            }
+            default:
+            {
+                
             }
         }
         gs.error = true;
@@ -284,7 +308,8 @@ namespace monopoly {
                 break;
             case LandType::bank:
             {
-                
+                gs.message += "请输入存款金额, 取款请输入负数";
+                gs.state = GS::bank;
             }
                 break;
             case LandType::news:

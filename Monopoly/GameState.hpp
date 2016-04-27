@@ -21,7 +21,7 @@ using std::string;
 
 namespace monopoly {
     enum class GS {
-        normal, tool, step, buy
+        normal, tool, step, buy, toolStore, bank
     };
     
     class GameState {
