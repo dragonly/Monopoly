@@ -34,12 +34,12 @@ namespace monopoly {
                     gs.message += "请输入步数(-9 ~ 9), 负号表示反向于前进方向: (输入 " + RED + "x" + NC + " 返回)";
                     gs.state = GS::step;
                 }
-                else if (strcmp(cmd, "i") == 0) {
-                    Player &player = gs.currentPlayer();
-                    gs.message += "玩家 " + gc.posSymbolMap[player.name] + "信息:";
-                    gs.message += "\n现金: ￥" + to_string(player.cash);
-                    gs.message += "\n存款: ￥" + to_string(player.deposit);
-                }
+//                else if (strcmp(cmd, "i") == 0) {
+//                    Player &player = gs.currentPlayer();
+//                    gs.message += "玩家 " + gc.posSymbolMap[player.name] + "信息:";
+//                    gs.message += "\n现金: ￥" + to_string(player.cash);
+//                    gs.message += "\n存款: ￥" + to_string(player.deposit);
+//                }
                 else if (strcmp(cmd, "r") == 0) {
                     gs.lastRoll = static_cast<int>(rand() % 6) + 1;
                     //                    gs.lastRoll = 5; // TODO: remove

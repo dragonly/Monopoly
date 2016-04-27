@@ -97,6 +97,7 @@ namespace monopoly {
         Player& player = gs.currentPlayer();
         Land& land = gs.board[player.x][player.y];
         string posName;
+        
         if (land.landType == LandType::land) {
             if (land.owner == "none") {
                 posName = "land";
@@ -113,10 +114,27 @@ namespace monopoly {
         cout << "现在是玩家 " << player << " 的回合, "
         << PURPLE << (gs.currentPlayer().direction ? "顺" : "逆") << NC << "时针, "
         << "当前位置" << posSymbolMap[posName] << endl;
+        
+        cout << "玩家信息: ";
+        cout << "现金￥" << player.cash << ", 存款￥" << player.deposit;
+        cout << " | 道具: ";
+        
+        vector<Tool>::iterator it = player.tools.begin();
+        int i = 0;
+        for (; !player.tools.empty() && it != player.tools.end()-1; it++, i++) {
+            cout << i << "." << it->type << ", ";
+        }
+        if (!player.tools.empty()) {
+            cout << i << "." << it->type << endl;
+        }
+        else {
+            cout << "无" << endl;
+        }
+        
         cout << "你可以做:" << endl
-        << "t(tool) - 道具列表" << endl
+//        << "t(tool) - 道具列表" << endl
         << "s(step) - 查看前后若干步的具体信息" << endl
-        << "i(info) - 查看玩家资产信息" << endl
+//        << "i(info) - 查看玩家资产信息" << endl
         << "r(roll) - 掷骰子" << endl
         << "gg(GG)  - 是在下输了" << endl;
     }
