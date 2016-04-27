@@ -11,9 +11,6 @@
 using std::cin;
 using std::cout;
 using std::endl;
-using std::map;
-using std::to_string;
-using std::make_pair;
 
 namespace monopoly {
     

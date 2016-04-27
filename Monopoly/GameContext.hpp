@@ -11,10 +11,6 @@
 
 #include <iostream>
 #include <map>
-#include <vector>
-#include <string>
-#include <cstdlib>
-#include <ctime>
 
 #include "Color.hpp"
 #include "Date.hpp"
@@ -24,12 +20,7 @@
 #include "GameState.hpp"
 #include "Controller.hpp"
 
-using std::string;
-using std::vector;
 using std::map;
-using std::pair;
-using std::make_pair;
-using std::ostream;
 
 namespace monopoly {
     
