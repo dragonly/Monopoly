@@ -36,7 +36,7 @@ namespace monopoly {
         IlandMap[LandType::VOID] = "void";
         
         
-        posSymbolMap["land"] = LGREEN+string("◎  ")+NC;
+        posSymbolMap["land"] = string("◎  ");
         posSymbolMap["toolStore"] = BROWN+string("道 ")+NC;
         posSymbolMap["bank"] = BLUE+string("银 ")+NC;
         posSymbolMap["news"] = PURPLE+string("新 ")+NC;
@@ -82,11 +82,21 @@ namespace monopoly {
     
     void GameContext::drawMap() {
         controller->displayPlayers();
+        string symbol;
         cout << "╔═════════════════════════════════════════════════════════════════╗" << endl;
         for(int i = 0; i < 10; i++) {
             cout << "║   ";
             for (int j = 0; j < 20; j++) {
-                cout << posSymbolMap[gs.board[i][j].name];
+                symbol = posSymbolMap[gs.board[i][j].name];
+                if (gs.board[i][j].landType == LandType::land && gs.board[i][j].owner == "none") {
+                    if (gs.board[i][j].street % 2 == 0) { // interleaved streets color
+                        symbol = LGRAY + symbol + NC;
+                    }
+                    else {
+                        symbol = DGRAY + symbol + NC;
+                    }
+                }
+                cout << symbol;
             }
             cout << "  ║" << endl;
         }
@@ -116,8 +126,8 @@ namespace monopoly {
         << "当前位置" << posSymbolMap[posName] << endl;
         
         cout << "玩家信息: ";
-        cout << "现金￥" << player.cash << ", 存款￥" << player.deposit;
-        cout << " | 道具: ";
+        cout << BROWN << "现金￥" << player.cash << ", 存款￥" << player.deposit;
+        cout << NC << " | " << LBLUE << "道具: ";
         
         vector<Tool>::iterator it = player.tools.begin();
         int i = 0;
@@ -131,7 +141,7 @@ namespace monopoly {
             cout << "无" << endl;
         }
         
-        cout << "你可以做:" << endl
+        cout << NC << "你可以做:" << endl
 //        << "t(tool) - 道具列表" << endl
         << "s(step) - 查看前后若干步的具体信息" << endl
 //        << "i(info) - 查看玩家资产信息" << endl

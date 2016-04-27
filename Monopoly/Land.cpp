@@ -27,7 +27,7 @@ namespace monopoly {
         pos = make_pair(x, y);
         level = 1;
         maxLevel = 6;
-        street = street;
+        this->street = street;
         basePrice = 200;
         updateRatio = 0.5;
         owner = "none";
