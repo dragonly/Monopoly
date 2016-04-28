@@ -45,8 +45,8 @@ namespace monopoly {
         posSymbolMap["blank"] = LGRAY+string("空 ")+NC;
         posSymbolMap["lottery"] = LCYAN+string("彩 ")+NC;
         posSymbolMap["coupon"] = LRED+string("券 ")+NC;
-        posSymbolMap["player1"] = YELLOW+string("P1 ")+NC;
-        posSymbolMap["player2"] = YELLOW+string("P2 ")+NC;
+        posSymbolMap["player1"] = LCYAN+string("P1 ")+NC;
+        posSymbolMap["player2"] = LBLUE+string("P2 ")+NC;
         posSymbolMap["player1Land1"] = LCYAN+string("Д1 ")+NC;
         posSymbolMap["player1Land2"] = LCYAN+string("Д2 ")+NC;
         posSymbolMap["player1Land3"] = LCYAN+string("Д3 ")+NC;

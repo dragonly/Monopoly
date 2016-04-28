@@ -307,7 +307,8 @@ namespace monopoly {
                 break;
             case LandType::toolStore:
             {
-                
+                gs.message += "进入道具店";
+                gs.state = GS::toolStore;
             }
                 break;
             case LandType::bank:
@@ -318,27 +319,32 @@ namespace monopoly {
                 break;
             case LandType::news:
             {
-                
+                gs.message += "新闻事件: ";
+                nextTurn();
             }
                 break;
             case LandType::gift:
             {
-                
+                gs.message += "赠送道具店";
+                nextTurn();
             }
                 break;
             case LandType::blank:
             {
                 gs.message += "这里什么也没有";
+                nextTurn();
             }
                 break;
             case LandType::lottery:
             {
-                
+                gs.message += "彩票";
+                nextTurn();
             }
                 break;
             case LandType::coupon:
             {
-                
+                gs.message += "点券";
+                nextTurn();
             }
                 break;
             default:
