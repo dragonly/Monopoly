@@ -11,6 +11,7 @@
 using std::cin;
 using std::cout;
 using std::endl;
+using std::to_string;
 
 namespace monopoly {
     
@@ -46,8 +47,18 @@ namespace monopoly {
         posSymbolMap["coupon"] = LRED+string("券 ")+NC;
         posSymbolMap["player1"] = YELLOW+string("P1 ")+NC;
         posSymbolMap["player2"] = YELLOW+string("P2 ")+NC;
-        posSymbolMap["player1Land"] = LCYAN+string("♤  ")+NC;
-        posSymbolMap["player2Land"] = LBLUE+string("♧  ")+NC;
+        posSymbolMap["player1Land1"] = LCYAN+string("♤1 ")+NC;
+        posSymbolMap["player1Land2"] = LCYAN+string("♤2 ")+NC;
+        posSymbolMap["player1Land3"] = LCYAN+string("♤3 ")+NC;
+        posSymbolMap["player1Land4"] = LCYAN+string("♤4 ")+NC;
+        posSymbolMap["player1Land5"] = LCYAN+string("♤5 ")+NC;
+        posSymbolMap["player1Land6"] = LCYAN+string("♤6 ")+NC;
+        posSymbolMap["player2Land1"] = LBLUE+string("♧1 ")+NC;
+        posSymbolMap["player2Land2"] = LBLUE+string("♧2 ")+NC;
+        posSymbolMap["player2Land3"] = LBLUE+string("♧3 ")+NC;
+        posSymbolMap["player2Land4"] = LBLUE+string("♧4 ")+NC;
+        posSymbolMap["player2Land5"] = LBLUE+string("♧5 ")+NC;
+        posSymbolMap["player2Land6"] = LBLUE+string("♧6 ")+NC;
         posSymbolMap["void"] = "   ";
         
         int i, j, k;
@@ -87,13 +98,19 @@ namespace monopoly {
         for(int i = 0; i < 10; i++) {
             cout << "║   ";
             for (int j = 0; j < 20; j++) {
-                symbol = posSymbolMap[gs.board[i][j].name];
-                if (gs.board[i][j].landType == LandType::land && gs.board[i][j].owner == "none") {
-                    if (gs.board[i][j].street % 2 == 0) { // interleaved streets color
-                        symbol = LGRAY + symbol + NC;
+                Land& land = gs.board[i][j];
+                symbol = posSymbolMap[land.name];
+                if (land.landType == LandType::land) {
+                    if (land.owner == "none") {
+                        if (land.street % 2 == 0) { // interleaved streets color
+                            symbol = LGRAY + symbol + NC;
+                        }
+                        else {
+                            symbol = DGRAY + symbol + NC;
+                        }
                     }
                     else {
-                        symbol = DGRAY + symbol + NC;
+//                        symbol = posSymbolMap[land.owner + "Land" + to_string(land.level)];
                     }
                 }
                 cout << symbol;
@@ -113,7 +130,7 @@ namespace monopoly {
                 posName = "land";
             }
             else {
-                posName = land.owner + "Land";
+                posName = land.owner + "Land" + to_string(land.level);
             }
         }
         else {
@@ -123,7 +140,11 @@ namespace monopoly {
         cout << "今天是" << gs.today << endl;
         cout << "现在是玩家 " << player << " 的回合, "
         << PURPLE << (gs.currentPlayer().direction ? "顺" : "逆") << NC << "时针, "
-        << "当前位置" << posSymbolMap[posName] << endl;
+        << "当前位置" << posSymbolMap[posName];
+        if (land.owner != "none") {
+//            cout << ("等级 " + GREEN + to_string(land.level) + NC);
+        }
+        cout << endl;
         
         cout << "玩家信息: ";
         cout << BROWN << "现金￥" << player.cash << ", 存款￥" << player.deposit;

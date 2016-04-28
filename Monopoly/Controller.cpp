@@ -115,7 +115,7 @@ namespace monopoly {
                             }
                             else {
                                 land.owner = player.name;
-                                land.name = player.name + "Land";
+                                land.name = player.name + "Land" + to_string(land.level);
                                 player.cash -= 200;
                             }
                         }
@@ -242,11 +242,11 @@ namespace monopoly {
     void Controller::displayLandCorrectly(int x, int y) {
         Land &land = gs.board[x][y];
         // restore init display name
-        if (gs.board[x][y].owner == "none") {
-            gs.board[x][y].name = gc.IlandMap[gs.board[x][y].landType];
+        if (land.owner == "none") {
+            land.name = gc.IlandMap[gs.board[x][y].landType];
         }
         else {
-            gs.board[x][y].name = gs.board[x][y].owner + string("Land");
+            land.name = land.owner + string("Land") + to_string(land.level);
         }
         for (int i = 0; i < gs.players.size(); i++) { // if player on land then display player
             if (gs.players[i].x == x && gs.players[i].y == y) {
