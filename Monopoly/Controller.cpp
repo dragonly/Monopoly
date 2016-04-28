@@ -45,7 +45,7 @@ namespace monopoly {
 //                }
                 else if (strcmp(cmd, "r") == 0) {
                     gs.lastRoll = static_cast<int>(rand() % 6) + 1;
-                    gs.lastRoll = 2; // TODO: remove
+//                    gs.lastRoll = 2; // TODO: remove
                     movePlayerWithAnimation(gs.lastRoll);
                     handleEvents();
                 }
