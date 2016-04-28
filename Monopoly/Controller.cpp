@@ -45,7 +45,7 @@ namespace monopoly {
 //                }
                 else if (strcmp(cmd, "r") == 0) {
                     gs.lastRoll = static_cast<int>(rand() % 6) + 1;
-//                    gs.lastRoll = 17; // TODO: remove
+                    gs.lastRoll = 2; // TODO: remove
                     movePlayerWithAnimation(gs.lastRoll);
                     handleEvents();
                 }
@@ -288,7 +288,8 @@ namespace monopoly {
                     gs.state = GS::buy;
                 }
                 else {
-                    int penalty = land.basePrice * land.level;
+                    // 罚款 = 0.3*房屋购买价格 + 0.1*同一条街道其余该玩家拥有街道购买价格之和
+                    int penalty = land.basePrice * land.level * 0.2 + gs.streetPenalty(land.street, land.owner);
                     player.cash -= penalty;
                     gs.getPlayerByName(land.owner).cash += penalty;
                     if (player.cash < 0) { // 玩家现金不够, 用银行存款抵扣

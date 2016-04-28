@@ -27,6 +27,7 @@ namespace monopoly {
     class GameState {
     public:
         vector<Land> road;
+        vector<int> streets[8];
         Land board[10][20];
         GS state;
         bool error;
@@ -41,6 +42,7 @@ namespace monopoly {
         GameState();
         Player& currentPlayer();
         Player& getPlayerByName(string);
+        int streetPenalty(int, string);
     };
 }
 

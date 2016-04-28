@@ -28,6 +28,7 @@ namespace monopoly {
             {"lottery", 2, 1, 7}, {"land", 2, 0, 7}, {"land", 1, 0, 7}};
         for (int i = 0; i < sizeof(lands)/sizeof(lands[0]); i++) {
             road.push_back(Land(lands[i]));
+            streets[road[i].street].push_back(i);
         }
         
         error = false;
@@ -55,5 +56,20 @@ namespace monopoly {
             }
         }
         return players[0]; // this is bad :( , but no fix for now
+    }
+    
+    int GameState::streetPenalty(int streetNum, string owner) {
+        int ret = 0;
+        int x, y;
+        // road 本身的owner信息不可靠, 不用于判断, 只用于存储对应board位置和街道信息
+        for (auto i : streets[streetNum]) {
+            x = road[i].pos.first;
+            y = road[i].pos.second;
+            if (board[x][y].owner == owner) {
+                ret += road[i].basePrice * road[i].level;
+            }
+        }
+        ret *= 0.1;
+        return ret;
     }
 }
