@@ -30,6 +30,7 @@ namespace monopoly {
         vector<Tool> tools;
         int cash;
         int deposit;
+        bool done; // 回合行动结束标志
         
         Player(string);
     };

@@ -178,7 +178,8 @@ namespace monopoly {
             gs.message = "\n";
             cout << "> ";
             cin >> cmd;
-            gs.today.nextDay();
+//            controller->nextDay();
+//            gs.today.nextDay();
         }
     }
 }

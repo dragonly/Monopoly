@@ -17,6 +17,7 @@ namespace monopoly {
         y = 0;
         cash = 1000;
         deposit = 0;
+        done = false;
     }
     
     ostream& operator <<(ostream& os, Player& player) {

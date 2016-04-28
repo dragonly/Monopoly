@@ -33,6 +33,7 @@ namespace monopoly {
         void displayLandCorrectly(int, int);
         void displayPlayers();
         void handleEvents();
+        void nextDay();
     };
 }
 

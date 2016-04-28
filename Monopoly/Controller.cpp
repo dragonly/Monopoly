@@ -18,7 +18,10 @@ namespace monopoly {
     
     void Controller::nextTurn() {
         // vector 超出下标不会报错而是 undefined behavior = =, 异常坑
+        // 翻转flag, 当所有人flag相同的时候, 表示过了一天
+        gs.currentPlayer().done = true;
         gs.playerIndex = (gs.playerIndex + 1) % gs.players.size();
+        nextDay();
     }
     
     void Controller::eval(char* cmd) {
@@ -42,7 +45,7 @@ namespace monopoly {
 //                }
                 else if (strcmp(cmd, "r") == 0) {
                     gs.lastRoll = static_cast<int>(rand() % 6) + 1;
-                    gs.lastRoll = 17; // TODO: remove
+//                    gs.lastRoll = 17; // TODO: remove
                     movePlayerWithAnimation(gs.lastRoll);
                     handleEvents();
                 }
@@ -324,7 +327,7 @@ namespace monopoly {
                 break;
             case LandType::blank:
             {
-                
+                gs.message += "这里什么也没有";
             }
                 break;
             case LandType::lottery:
@@ -339,6 +342,22 @@ namespace monopoly {
                 break;
             default:
                 break;
+        }
+    }
+    
+    void Controller::nextDay() {
+        bool newDay = true;
+        for (auto p : gs.players) {
+            if (!p.done) {
+                newDay = false;
+                break;
+            }
+        }
+        if (newDay) {
+            for (auto& p : gs.players) {
+                p.done = false;
+            }
+            gs.today.nextDay();
         }
     }
 }
