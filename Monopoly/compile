@@ -1,0 +1,2 @@
+#! /usr/bin/env bash
+g++ --std=c++11 main.cpp GameContext.cpp GameState.cpp Controller.cpp Date.cpp Land.cpp Player.cpp Tool.cpp
