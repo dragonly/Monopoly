@@ -39,7 +39,7 @@ namespace monopoly {
                     gs.state = GS::step;
                 }
                 else if (strcmp(cmd, "r") == 0) {
-                    gs.lastRoll = static_cast<int>(rand() % 6) + 1;
+                    gs.lastRoll = static_cast<int>(rand() % 3) + 1;
 //                    gs.lastRoll = 2; // TODO: remove
                     movePlayerWithAnimation(gs.lastRoll);
                     handleEvents();
@@ -471,12 +471,31 @@ namespace monopoly {
                 break;
             case ToolType::REMOVE_CARD:
             {
-                
+                int x, y;
+                int streetNum = gs.board[player.x][player.y].street;
+                for (auto i : gs.streets[streetNum]) {
+                    x = gs.road[i].pos.first;
+                    y = gs.road[i].pos.second;
+                    if (gs.board[x][y].owner != "none") {
+                        // 返还 150% 当前房价
+                        for (int j = 0; j < gs.players.size(); j++) {
+                            if (gs.players[j].name == gs.board[x][y].owner) {
+                                gs.players[j].cash += gs.board[x][y].level * gs.board[x][y].basePrice * 1.5;
+                                break;
+                            }
+                        }
+                        gs.board[x][y].name = gc.IlandMap[gs.board[x][y].landType];
+                        gs.board[x][y].owner = "none";
+                        gs.board[x][y].level = 1;
+                    }
+                }
+                gs.state = GS::normal;
             }
                 break;
             case ToolType::MONSTER_CARD:
             {
                 
+                gs.state = GS::normal;
             }
                 break;
             default:

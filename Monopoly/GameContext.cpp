@@ -93,6 +93,8 @@ namespace monopoly {
         gs.players[0].addTool(ToolType::AVERAGE_CARD);
         gs.players[0].addTool(ToolType::TURNING_CARD);
         gs.players[0].addTool(ToolType::STAY_CARD);
+        gs.players[0].addTool(ToolType::REMOVE_CARD);
+        gs.players[0].addTool(ToolType::MONSTER_CARD);
         
         init();
     }

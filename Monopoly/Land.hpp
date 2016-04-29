@@ -27,7 +27,7 @@ namespace monopoly {
         int level;
         int maxLevel;
         int basePrice;
-        int updateRatio;
+        double updateRatio;
         string owner;
         bool roadblock;
         LandType landType;
