@@ -91,6 +91,7 @@ namespace monopoly {
         gs.players[0].addTool(ToolType::ROADBLOCK);
         gs.players[0].addTool(ToolType::MAGIC_DICE);
         gs.players[0].addTool(ToolType::AVERAGE_CARD);
+        gs.players[0].addTool(ToolType::TURNING_CARD);
         
         init();
     }

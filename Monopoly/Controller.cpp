@@ -244,7 +244,7 @@ namespace monopoly {
             player.curPos = (player.curPos + delta) % gs.road.size();
         }
         else {
-            player.curPos = (player.curPos - delta) % gs.road.size();
+            player.curPos = (player.curPos - delta + static_cast<int>(gs.road.size())) % gs.road.size();
         }
         curX = gs.road[player.curPos].pos.first;
         curY = gs.road[player.curPos].pos.second;
@@ -435,7 +435,9 @@ namespace monopoly {
                 break;
             case ToolType::TURNING_CARD:
             {
-                
+                gs.message += "\n使用了转向卡";
+                player.direction = !player.direction;
+                gs.state = GS::normal;
             }
                 break;
             case ToolType::AVERAGE_CARD:
@@ -450,6 +452,7 @@ namespace monopoly {
                 for (it = gs.players.begin(); it != gs.players.end(); it++) {
                     it->cash = average;
                 }
+                gs.message += "\n所有人的现金被平均分了";
                 gs.state = GS::normal;
             }
                 break;
