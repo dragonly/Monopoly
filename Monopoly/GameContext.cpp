@@ -61,6 +61,14 @@ namespace monopoly {
         posSymbolMap["player2Land6"] = LBLUE+string("П6 ")+NC;
         posSymbolMap["void"] = "   ";
         
+        toolMap[ToolType::MAGIC_DICE] = "遥控骰子";
+        toolMap[ToolType::ROADBLOCK] = "路障";
+        toolMap[ToolType::TURNING_CARD] = "转向卡";
+        toolMap[ToolType::AVERAGE_CARD] = "均富卡";
+        toolMap[ToolType::BUY_CARD] = "购地卡";
+        toolMap[ToolType::REMOVE_CARD] = "拆迁卡";
+        toolMap[ToolType::MONSTER_CARD] = "怪兽卡";
+        
         int i, j, k;
         for (k = 0; k < gs.road.size(); k++) {
             // fix land type of road
@@ -72,9 +80,19 @@ namespace monopoly {
             gs.board[i][j].landType = gs.road[k].landType;
             gs.board[i][j].street = gs.road[k].street;
         }
-        gs.board[0][0].name = gs.currentPlayer().name;
         
         controller = new Controller(*this);
+        
+        // finish GameState initialization
+        gs.players.push_back(Player("player1", toolMap));
+        gs.players.push_back(Player("player2", toolMap));
+        
+//        gs.players[0].tools.push_back(Tool(ToolType::ROADBLOCK));
+//        gs.players[0].tools.push_back(Tool(ToolType::MAGIC_DICE));
+        gs.players[0].addTool(ToolType::ROADBLOCK);
+        gs.players[0].addTool(ToolType::MAGIC_DICE);
+        
+//        gs.board[0][0].name = gs.currentPlayer().name;
         
         init();
     }
@@ -153,10 +171,10 @@ namespace monopoly {
         vector<Tool>::iterator it = player.tools.begin();
         int i = 0;
         for (; !player.tools.empty() && it != player.tools.end()-1; it++, i++) {
-            cout << i << "." << it->type << ", ";
+            cout << i << "." << it->name << ", ";
         }
         if (!player.tools.empty()) {
-            cout << i << "." << it->type << endl;
+            cout << i << "." << it->name << endl;
         }
         else {
             cout << "无" << endl;

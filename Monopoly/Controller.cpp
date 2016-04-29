@@ -63,7 +63,7 @@ namespace monopoly {
                 Player& player = gs.currentPlayer();
                 size_t count = player.tools.size();
                 if (strlen(cmd) == 1 && cmd[0] >= 48/*0*/ && cmd[0] < 48 + count) {
-                    gs.message = string("你选择了道具: ") + cmd + player.tools[atoi(cmd)].type;
+                    gs.message = string("你选择了道具: ") + cmd + player.tools[atoi(cmd)].name;
                     gs.state = GS::normal;
                     return;
                 }
@@ -219,7 +219,7 @@ namespace monopoly {
         Player& player = gs.currentPlayer();
         cout << "当前拥有道具:" << endl;
         for (int i = 0; i < player.tools.size(); i++) {
-            cout << i << ". " << player.tools[i].type << "   ";
+            cout << i << ". " << player.tools[i].name << "   ";
         }
     }
     

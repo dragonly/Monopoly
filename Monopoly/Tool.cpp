@@ -9,7 +9,7 @@
 #include "Tool.hpp"
 
 namespace monopoly {
-    Tool::Tool(string type): type(type) {
+    Tool::Tool(ToolType type, string name): type(type), name(name) {
     }
     
     ostream& operator <<(ostream& os, Tool& tool) {

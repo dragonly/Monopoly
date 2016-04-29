@@ -11,11 +11,13 @@
 
 #include <iostream>
 #include <vector>
+#include <map>
 #include "Color.hpp"
 #include "Tool.hpp"
 
 using std::string;
 using std::ostream;
+using std::map;
 using std::vector;
 
 namespace monopoly {
@@ -31,8 +33,10 @@ namespace monopoly {
         int cash;
         int deposit;
         bool done; // 回合行动结束标志
+        map<ToolType, string> toolMap;
         
-        Player(string);
+        Player(string, map<ToolType, string> &);
+        void addTool(ToolType);
     };
     ostream& operator <<(ostream&, Player&);
 }

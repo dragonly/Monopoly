@@ -9,7 +9,7 @@
 #include "Player.hpp"
 
 namespace monopoly {
-    Player::Player(string name): name(name) {
+    Player::Player(string name, map<ToolType, string> &m): name(name), toolMap(m) {
         direction = true;
         curPos = 0;
         prePos = 0;
@@ -20,9 +20,12 @@ namespace monopoly {
         done = false;
     }
     
+    void Player::addTool(ToolType type) {
+        tools.emplace_back(Tool(type, toolMap[type]));
+    }
+    
     ostream& operator <<(ostream& os, Player& player) {
         os << GREEN << player.name << NC;
         return os;
     }
-    
 }

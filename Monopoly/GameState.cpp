@@ -37,12 +37,6 @@ namespace monopoly {
         errMsg = "";
         playerIndex = 0;
         lastRoll = -1;
-        
-        players.push_back(Player("player1"));
-        players.push_back(Player("player2"));
-        
-        players[0].tools.push_back(Tool("红卡"));
-        players[0].tools.push_back(Tool("福神卡"));
     }
     
     Player& GameState::currentPlayer() {

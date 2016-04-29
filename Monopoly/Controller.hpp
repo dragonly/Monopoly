@@ -17,6 +17,7 @@
 namespace monopoly {
     
     class GameContext;
+    class GameState;
     
     class Controller {
     private:
