@@ -31,18 +31,13 @@ namespace monopoly {
             case GS::normal:
             {
                 if (strcmp(cmd, "t") == 0) {
+                    gs.message += "请选择工具编号:";
                     gs.state = GS::tool;
                 }
                 else if (strcmp(cmd, "s") == 0) {
                     gs.message += "请输入步数(-9 ~ 9), 负号表示反向于前进方向: (输入 " + RED + "x" + NC + " 返回)";
                     gs.state = GS::step;
                 }
-//                else if (strcmp(cmd, "i") == 0) {
-//                    Player &player = gs.currentPlayer();
-//                    gs.message += "玩家 " + gc.posSymbolMap[player.name] + "信息:";
-//                    gs.message += "\n现金: ￥" + to_string(player.cash);
-//                    gs.message += "\n存款: ￥" + to_string(player.deposit);
-//                }
                 else if (strcmp(cmd, "r") == 0) {
                     gs.lastRoll = static_cast<int>(rand() % 6) + 1;
 //                    gs.lastRoll = 2; // TODO: remove
@@ -62,10 +57,31 @@ namespace monopoly {
             {
                 Player& player = gs.currentPlayer();
                 size_t count = player.tools.size();
-                if (strlen(cmd) == 1 && cmd[0] >= 48/*0*/ && cmd[0] < 48 + count) {
-                    gs.message = string("你选择了道具: ") + cmd + player.tools[atoi(cmd)].name;
-                    gs.state = GS::normal;
+                if (player.usingMagicDice) {
+                    int num = atoi(cmd);
+                    if (num > 0 && num < 7) {
+                        gs.message += "前进 " + to_string(num) + " 步";
+                        gs.state = GS::normal;
+                        player.usingMagicDice = false;
+                        movePlayerWithAnimation(num);
+                        handleEvents();
+                        return;
+                    }
+                    else {
+                        gs.errMsg = RED + "无效的步数" + NC;
+                        gs.message += "请输入前进步数 (1~6)";
+                        break;
+                    }
+                }
+                else if (strlen(cmd) == 1 && cmd[0] >= 48/*0*/ && cmd[0] < 48 + count) {
+                    const Tool &tool = player.tools[atoi(cmd)];
+                    gs.message = string("你选择了道具: ") + cmd + tool.name;
+                    useTool(atoi(cmd));
                     return;
+                }
+                else if (strcmp(cmd, "x") == 0) {
+                    gs.message += "取消操作";
+                    gs.state = GS::normal;
                 }
                 else {
                     gs.errMsg = RED + "没有这个工具 :(" + NC;
@@ -365,6 +381,31 @@ namespace monopoly {
                 p.done = false;
             }
             gs.today.nextDay();
+        }
+    }
+//    toolMap[ToolType::MAGIC_DICE] = "遥控骰子";
+//    toolMap[ToolType::ROADBLOCK] = "路障";
+//    toolMap[ToolType::TURNING_CARD] = "转向卡";
+//    toolMap[ToolType::AVERAGE_CARD] = "均富卡";
+//    toolMap[ToolType::BUY_CARD] = "购地卡";
+//    toolMap[ToolType::REMOVE_CARD] = "拆迁卡";
+//    toolMap[ToolType::MONSTER_CARD] = "怪兽卡";
+    
+    void Controller::useTool(int i) {
+        Player &player = gs.currentPlayer();
+        const Tool &tool = player.tools[i];
+        switch(tool.type) {
+            case ToolType::MAGIC_DICE:
+            {
+                vector<Tool>::iterator it = player.tools.begin();
+                for (int j = 0; j < i; j++, it++) ;
+                player.tools.erase(it);
+                gs.message += "\n请输入前进步数 (1~6)";
+                gs.currentPlayer().usingMagicDice = true;
+            }
+                break;
+            default:
+                break;
         }
     }
 }

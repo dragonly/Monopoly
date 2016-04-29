@@ -59,6 +59,7 @@ namespace monopoly {
         posSymbolMap["player2Land4"] = LBLUE+string("П4 ")+NC;
         posSymbolMap["player2Land5"] = LBLUE+string("П5 ")+NC;
         posSymbolMap["player2Land6"] = LBLUE+string("П6 ")+NC;
+        posSymbolMap["roadBlock"] = RED+string("☀  ")+NC;
         posSymbolMap["void"] = "   ";
         
         toolMap[ToolType::MAGIC_DICE] = "遥控骰子";
@@ -87,12 +88,8 @@ namespace monopoly {
         gs.players.push_back(Player("player1", toolMap));
         gs.players.push_back(Player("player2", toolMap));
         
-//        gs.players[0].tools.push_back(Tool(ToolType::ROADBLOCK));
-//        gs.players[0].tools.push_back(Tool(ToolType::MAGIC_DICE));
         gs.players[0].addTool(ToolType::ROADBLOCK);
         gs.players[0].addTool(ToolType::MAGIC_DICE);
-        
-//        gs.board[0][0].name = gs.currentPlayer().name;
         
         init();
     }
@@ -181,7 +178,7 @@ namespace monopoly {
         }
         
         cout << NC << "你可以做:" << endl
-//        << "t(tool) - 道具列表" << endl
+        << "t(tool) - 道具列表" << endl
         << "s(step) - 查看前后若干步的具体信息" << endl
 //        << "i(info) - 查看玩家资产信息" << endl
         << "r(roll) - 掷骰子" << endl

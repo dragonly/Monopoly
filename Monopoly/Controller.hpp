@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include <unistd.h>
+#include "Tool.hpp"
 #include "GameContext.hpp"
 #include "GameState.hpp"
 
@@ -35,6 +36,7 @@ namespace monopoly {
         void displayPlayers();
         void handleEvents();
         void nextDay();
+        void useTool(int);
     };
 }
 

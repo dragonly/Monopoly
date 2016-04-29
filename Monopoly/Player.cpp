@@ -9,7 +9,7 @@
 #include "Player.hpp"
 
 namespace monopoly {
-    Player::Player(string name, map<ToolType, string> &m): name(name), toolMap(m) {
+    Player::Player(string name, map<ToolType, string> m): name(name), toolMap(m) {
         direction = true;
         curPos = 0;
         prePos = 0;
@@ -18,6 +18,7 @@ namespace monopoly {
         cash = 1000;
         deposit = 0;
         done = false;
+        usingMagicDice = false;
     }
     
     void Player::addTool(ToolType type) {
