@@ -29,6 +29,7 @@ namespace monopoly {
         int basePrice;
         int updateRatio;
         string owner;
+        bool roadblock;
         LandType landType;
         
         Land();

@@ -34,10 +34,12 @@ namespace monopoly {
         int deposit;
         bool done; // 回合行动结束标志
         bool usingMagicDice; // 正在使用遥控骰子的标识
+        bool usingRoadblock; // 正在使用路障的标识
         map<ToolType, string> toolMap;
         
         Player(string, map<ToolType, string>);
         void addTool(ToolType);
+        void dropTool(int);
     };
     ostream& operator <<(ostream&, Player&);
 }

@@ -59,7 +59,7 @@ namespace monopoly {
         posSymbolMap["player2Land4"] = LBLUE+string("П4 ")+NC;
         posSymbolMap["player2Land5"] = LBLUE+string("П5 ")+NC;
         posSymbolMap["player2Land6"] = LBLUE+string("П6 ")+NC;
-        posSymbolMap["roadBlock"] = RED+string("☀  ")+NC;
+        posSymbolMap["roadblock"] = RED+string("☀  ")+NC;
         posSymbolMap["void"] = "   ";
         
         toolMap[ToolType::MAGIC_DICE] = "遥控骰子";
@@ -115,7 +115,7 @@ namespace monopoly {
             for (int j = 0; j < 20; j++) {
                 Land& land = gs.board[i][j];
                 symbol = posSymbolMap[land.name];
-                if (land.landType == LandType::land) {
+                if (land.landType == LandType::land && !land.roadblock) {
                     if (land.owner == "none") {
                         if (land.street % 2 == 0) { // interleaved streets color
                             symbol = LGRAY + symbol + NC;

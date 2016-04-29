@@ -19,6 +19,7 @@ namespace monopoly {
         basePrice = 200;
         updateRatio = 0.5;
         owner = "none";
+        roadblock = false;
         landType = LandType::VOID;
     }
     
@@ -31,6 +32,7 @@ namespace monopoly {
         basePrice = 200;
         updateRatio = 0.5;
         owner = "none";
+        roadblock = false;
         landType = LandType::VOID;
     }
 }

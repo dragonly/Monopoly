@@ -58,18 +58,36 @@ namespace monopoly {
                 Player& player = gs.currentPlayer();
                 size_t count = player.tools.size();
                 if (player.usingMagicDice) {
-                    int num = atoi(cmd);
-                    if (num > 0 && num < 7) {
-                        gs.message += "前进 " + to_string(num) + " 步";
-                        gs.state = GS::normal;
+                    int step = atoi(cmd);
+                    if (step > 0 && step < 7) {
                         player.usingMagicDice = false;
-                        movePlayerWithAnimation(num);
+                        gs.message += "前进 " + to_string(step) + " 步";
+                        gs.state = GS::normal;
+                        movePlayerWithAnimation(step);
                         handleEvents();
                         return;
                     }
                     else {
                         gs.errMsg = RED + "无效的步数" + NC;
-                        gs.message += "请输入前进步数 (1~6)";
+                        gs.message += "请输入前进步数 (1 ~ 6)";
+                        break;
+                    }
+                }
+                else if (player.usingRoadblock) {
+                    int step = atoi(cmd);
+                    if (step > -9 && step < 9) {
+                        player.usingRoadblock = false;
+                        gs.message += "在位置 " + to_string(step) + " 处放置了一个路障";
+                        int x = gs.road[player.curPos + step].pos.first;
+                        int y = gs.road[player.curPos + step].pos.second;
+                        gs.board[x][y].name = "roadblock";
+                        gs.board[x][y].roadblock = true;
+                        gs.state = GS::normal;
+                        return;
+                    }
+                    else {
+                        gs.errMsg = RED + "无效的位置" + NC;
+                        gs.message += "\n请输入放置路障的位置 (-8 ~ 8)";
                         break;
                     }
                 }
@@ -206,6 +224,14 @@ namespace monopoly {
         for (int i = 0; i < delta; i++) {
             movePlayer(1);
             gc.drawGame();
+            Player &player = gs.currentPlayer();
+            int x = gs.road[player.curPos].pos.first;
+            int y = gs.road[player.curPos].pos.second;
+            if (gs.board[x][y].roadblock) {
+                gs.board[x][y].roadblock = false;
+                gs.board[x][y].name = player.name;
+                return;
+            }
             if (i != delta - 1) usleep(80000);
         }
     }
@@ -397,15 +423,44 @@ namespace monopoly {
         switch(tool.type) {
             case ToolType::MAGIC_DICE:
             {
-                vector<Tool>::iterator it = player.tools.begin();
-                for (int j = 0; j < i; j++, it++) ;
-                player.tools.erase(it);
-                gs.message += "\n请输入前进步数 (1~6)";
+                gs.message += "\n请输入前进步数 (1 ~ 6)";
                 gs.currentPlayer().usingMagicDice = true;
+            }
+                break;
+            case ToolType::ROADBLOCK:
+            {
+                gs.message += "\n请输入放置路障的位置 (-8 ~ 8)";
+                gs.currentPlayer().usingRoadblock = true;
+            }
+                break;
+            case ToolType::TURNING_CARD:
+            {
+                
+            }
+                break;
+            case ToolType::AVERAGE_CARD:
+            {
+                
+            }
+                break;
+            case ToolType::BUY_CARD:
+            {
+                
+            }
+                break;
+            case ToolType::REMOVE_CARD:
+            {
+                
+            }
+                break;
+            case ToolType::MONSTER_CARD:
+            {
+                
             }
                 break;
             default:
                 break;
         }
+        player.dropTool(i);
     }
 }
