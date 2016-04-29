@@ -440,7 +440,17 @@ namespace monopoly {
                 break;
             case ToolType::AVERAGE_CARD:
             {
-                
+                int sum = 0;
+                int average;
+                vector<Player>::iterator it;
+                for (it = gs.players.begin(); it != gs.players.end(); it++) {
+                    sum += it->cash;
+                }
+                average = sum / gs.players.size();
+                for (it = gs.players.begin(); it != gs.players.end(); it++) {
+                    it->cash = average;
+                }
+                gs.state = GS::normal;
             }
                 break;
             case ToolType::BUY_CARD:
