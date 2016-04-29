@@ -76,13 +76,13 @@ namespace monopoly {
                 else if (player.usingRoadblock) {
                     int step = atoi(cmd);
                     if (step > -9 && step < 9) {
-                        player.usingRoadblock = false;
                         gs.message += "在位置 " + to_string(step) + " 处放置了一个路障";
                         int x = gs.road[player.curPos + step].pos.first;
                         int y = gs.road[player.curPos + step].pos.second;
                         gs.board[x][y].name = "roadblock";
                         gs.board[x][y].roadblock = true;
                         gs.state = GS::normal;
+                        player.usingRoadblock = false;
                         return;
                     }
                     else {
@@ -91,6 +91,12 @@ namespace monopoly {
                         break;
                     }
                 }
+//                else if (player.usingStayCard) {
+//                    handleEvents();
+//                    gs.state = GS::normal;
+//                    player.usingStayCard = false;
+//                    return;
+//                }
                 else if (strlen(cmd) == 1 && cmd[0] >= 48/*0*/ && cmd[0] < 48 + count) {
                     const Tool &tool = player.tools[atoi(cmd)];
                     gs.message = string("你选择了道具: ") + cmd + tool.name;
@@ -321,7 +327,7 @@ namespace monopoly {
             case LandType::land:
             {
                 if (land.owner == "none") { // 无主之地
-                    gs.message += "当前土地闲置, 是否花费 ￥200 购买?(y/n)";
+                    gs.message += "\n当前土地闲置, 是否花费 ￥200 购买?(y/n)";
                     gs.state = GS::buy;
                 }
                 else if (land.owner == player.name) { // 升级房屋
@@ -456,9 +462,11 @@ namespace monopoly {
                 gs.state = GS::normal;
             }
                 break;
-            case ToolType::BUY_CARD:
+            case ToolType::STAY_CARD:
             {
-                
+                gs.message += "\n原地停留一回合";
+                gs.state = GS::normal;
+                handleEvents();
             }
                 break;
             case ToolType::REMOVE_CARD:

@@ -66,7 +66,7 @@ namespace monopoly {
         toolMap[ToolType::ROADBLOCK] = "路障";
         toolMap[ToolType::TURNING_CARD] = "转向卡";
         toolMap[ToolType::AVERAGE_CARD] = "均富卡";
-        toolMap[ToolType::BUY_CARD] = "购地卡";
+        toolMap[ToolType::STAY_CARD] = "滞留卡";
         toolMap[ToolType::REMOVE_CARD] = "拆迁卡";
         toolMap[ToolType::MONSTER_CARD] = "怪兽卡";
         
@@ -92,6 +92,7 @@ namespace monopoly {
         gs.players[0].addTool(ToolType::MAGIC_DICE);
         gs.players[0].addTool(ToolType::AVERAGE_CARD);
         gs.players[0].addTool(ToolType::TURNING_CARD);
+        gs.players[0].addTool(ToolType::STAY_CARD);
         
         init();
     }
