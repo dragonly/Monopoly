@@ -229,19 +229,26 @@ namespace monopoly {
                 Player& player = gs.currentPlayer();
                 if (save > 0 && save > player.cash) {
                     gs.errMsg = "现金不足";
-                    break;
                 }
                 else if (save < 0 && -save > player.deposit) {
                     gs.errMsg = "存款不足";
-                    break;
                 }
                 else {
                     player.cash -= save;
                     player.deposit += save;
-                    gs.state = GS::normal;
-                    nextTurn();
-                    return;
+                    if (player.stepsLeft != 0) {
+                        gs.state = GS::normal;
+                        movePlayerWithAnimation(player.stepsLeft);
+                        player.stepsLeft = 0;
+                        handleEvents();
+                    }
+                    else {
+                        gs.state = GS::normal;
+                        nextTurn();
+                        return;
+                    }
                 }
+                break;
             }
         }
         gs.error = true;
@@ -257,6 +264,10 @@ namespace monopoly {
             if (gs.board[x][y].roadblock) {
                 gs.board[x][y].roadblock = false;
                 gs.board[x][y].name = player.name;
+                return;
+            }
+            else if (gs.board[x][y].landType == LandType::bank) {
+                player.stepsLeft = delta - i - 1;
                 return;
             }
             if (i != delta - 1) usleep(80000);
@@ -281,15 +292,6 @@ namespace monopoly {
         player.x = curX;
         player.y = curY;
         displayLandCorrectly(preX, preY);
-    }
-    
-    // TODO: don't use cout here!
-    void Controller::showTools() {
-        Player& player = gs.currentPlayer();
-        cout << "当前拥有道具:" << endl;
-        for (int i = 0; i < player.tools.size(); i++) {
-            cout << i << ". " << player.tools[i].name << "   ";
-        }
     }
     
     void Controller::popCurrentPlayer() {
@@ -391,6 +393,7 @@ namespace monopoly {
             case LandType::news:
             {
                 gs.message += "新闻事件: ";
+                
                 nextTurn();
             }
                 break;

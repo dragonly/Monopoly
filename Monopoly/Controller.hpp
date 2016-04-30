@@ -30,7 +30,6 @@ namespace monopoly {
         void eval(char*);
         void movePlayer(int);
         void movePlayerWithAnimation(int);
-        void showTools();
         void popCurrentPlayer();
         void displayLandCorrectly(int, int);
         void displayPlayers();

@@ -12,7 +12,7 @@ namespace monopoly {
     GameState::GameState()
     : today(2016, 5, 1) {
         Land lands[] = { // this is just for initializing, don't do logic on it!!!
-            {"land", 0, 0, 0}, {"land", 0, 1, 0}, {"land", 0, 2, 0}, {"coupon", 0, 3, 0}, {"land", 0, 4, 0},
+            {"land", 0, 0, 0}, {"bank", 0, 1, 0}, {"land", 0, 2, 0}, {"coupon", 0, 3, 0}, {"land", 0, 4, 0},
             {"land", 0, 5, 0}, {"land", 0, 6, 0}, {"land", 0, 7, 0}, {"land", 1, 7, 1}, {"land", 1, 8, 1},
             {"land", 1, 9, 1}, {"news", 1, 10, 1}, {"land", 2, 10, 1}, {"land", 3, 10, 1}, {"land", 4, 10, 1},
             {"land", 4, 11, 2}, {"land", 4, 12, 2}, {"bank", 4, 13, 2}, {"land", 4, 14, 2}, {"land", 3, 14, 2},
