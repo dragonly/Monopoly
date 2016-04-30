@@ -97,7 +97,7 @@ namespace monopoly {
                 }
                 else if (strlen(cmd) == 1 && cmd[0] >= 48/*0*/ && cmd[0] < 48 + count) {
                     const Tool &tool = player.tools[atoi(cmd)];
-                    gs.message = string("你选择了道具: ") + cmd + tool.name;
+                    gs.message = string("你使用了道具: ") + cmd + tool.name;
                     useTool(atoi(cmd));
                     return;
                 }
@@ -106,7 +106,7 @@ namespace monopoly {
                     gs.state = GS::normal;
                 }
                 else {
-                    gs.errMsg = RED + "没有这个工具 :(" + NC;
+                    gs.errMsg = RED + "没有这个道具 :(" + NC;
                     break; // error
                 }
             }
@@ -416,7 +416,9 @@ namespace monopoly {
                 break;
             case LandType::coupon:
             {
-                gs.message += "点券";
+                int coupon = ((rand() % 15) + 1) / 5; // 获得0~2点券
+                player.coupon += coupon;
+                gs.message += "获得点券" + YELLOW + to_string(coupon) + NC;
                 nextTurn();
             }
                 break;

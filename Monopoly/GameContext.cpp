@@ -161,14 +161,14 @@ namespace monopoly {
         cout << "现在是玩家 " << player << " 的回合, "
         << PURPLE << (gs.currentPlayer().direction ? "顺" : "逆") << NC << "时针, "
         << "当前位置" << posSymbolMap[posName];
-        if (land.owner != "none") {
+//        if (land.owner != "none") {
 //            cout << ("等级 " + GREEN + to_string(land.level) + NC);
-        }
+//        }
         cout << endl;
         
         cout << "玩家信息: ";
-        cout << BROWN << "现金￥" << player.cash << ", 存款￥" << player.deposit;
-        cout << NC << " | " << LBLUE << "道具: ";
+        cout << BROWN << "现金￥" << player.cash << ", 存款￥" << player.deposit << ", 点券 " << player.coupon;
+        cout << NC << "\n          " << LBLUE << "道具: ";
         
         vector<Tool>::iterator it = player.tools.begin();
         int i = 0;
