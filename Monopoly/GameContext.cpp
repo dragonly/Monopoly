@@ -197,10 +197,26 @@ namespace monopoly {
         << "---------------------------------------" << endl;
     }
     
+    void GameContext::drawStock() {
+        cout << "--------------------------------------" << endl;
+        cout << "|  编号  |  名字  |  单价  |  持有  |" << endl;
+        vector<Stock>::iterator it;
+        for (it = gs.stockMarket.stocks.begin(); it != gs.stockMarket.stocks.end(); it++) {
+            cout << "|   " << it->serial << "    |   " << it->name << "    g|    " << it->price << "   |    " << gs.stockMarket.playerMap[gs.currentPlayer().name][it->serial] << "   |" << endl;
+            cout << "--------------------------------------" << endl;
+        }
+        
+    }
+    
     void GameContext::drawGame() {
         clear();
-        drawMap();
-        drawMenu();
+        if (gs.state == GS::stock) {
+            drawStock();
+        }
+        else {
+            drawMap();
+            drawMenu();
+        }
     }
     
     void GameContext::gameLoop() {

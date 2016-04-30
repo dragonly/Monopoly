@@ -41,6 +41,7 @@ namespace monopoly {
         void clear();
         void drawMap();
         void drawMenu();
+        void drawStock();
         void drawGame();
         void gameLoop();
     };
