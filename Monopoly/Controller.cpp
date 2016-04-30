@@ -40,12 +40,16 @@ namespace monopoly {
                 }
                 else if (strcmp(cmd, "r") == 0) {
                     gs.lastRoll = static_cast<int>(rand() % 3) + 1;
-//                    gs.lastRoll = 2; // TODO: remove
+                    gs.lastRoll = 3; // TODO: remove
+                    gs.message += "玩家" + GREEN + gs.currentPlayer().name + NC + "刚刚掷出了 " + LCYAN + to_string(gs.lastRoll) + "\n";
                     movePlayerWithAnimation(gs.lastRoll);
                     handleEvents();
                 }
                 else if (strcmp(cmd, "gg") == 0) {
                     popCurrentPlayer();
+                }
+                else if (strcmp(cmd, "init") == 0) {
+                    gs.message += RED+"欢"+PURPLE+"迎"+BROWN+"来"+GREEN+"到"+BLUE+"大"+LRED+"富"+CYAN+"翁"+ NC;
                 }
                 else {
                     gs.errMsg = RED + "什么鬼 _(:з」∠)_" + NC;
@@ -355,8 +359,10 @@ namespace monopoly {
                 break;
             case LandType::toolStore:
             {
-                gs.message += "进入道具店";
-                gs.state = GS::toolStore;
+                int r = static_cast<int>(rand() % 7);
+                player.addTool(static_cast<ToolType>(r));
+                gs.message += "获得随机道具: " + GREEN + player.toolMap[static_cast<ToolType>(r)] + NC;
+                nextTurn();
             }
                 break;
             case LandType::bank:

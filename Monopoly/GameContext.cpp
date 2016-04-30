@@ -187,18 +187,18 @@ namespace monopoly {
         << "s(step) - 查看前后若干步的具体信息" << endl
 //        << "i(info) - 查看玩家资产信息" << endl
         << "r(roll) - 掷骰子" << endl
-        << "gg(GG)  - 是在下输了" << endl;
+        << "gg(GG)  - 是在下输了" << endl
+        << "---------------------------------------" << endl;
     }
     
     void GameContext::drawGame() {
         clear();
         drawMap();
         drawMenu();
-        cout << static_cast<int>(gs.state) << endl;
     }
     
     void GameContext::gameLoop() {
-        char cmd[10] = "i";
+        char cmd[10] = "init";
         
         while (true) {
             controller->eval(cmd);
@@ -211,16 +211,10 @@ namespace monopoly {
             if (gs.error) {
                 cout << endl << RED << gs.errMsg << NC << endl;
             }
-            if (gs.lastRoll != -1) {
-                cout << "玩家" + GREEN + gs.currentPlayer().name + NC + "刚刚掷出了 " << LCYAN << gs.lastRoll << NC << endl;
-                gs.lastRoll = -1;
-            }
             cout << gs.message << endl;
-            gs.message = "\n";
+            gs.message = "";
             cout << "> ";
             cin >> cmd;
-//            controller->nextDay();
-//            gs.today.nextDay();
         }
     }
 }
