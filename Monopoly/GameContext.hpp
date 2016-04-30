@@ -13,12 +13,13 @@
 #include <map>
 
 #include "Color.hpp"
-#include "Date.hpp"
-#include "Land.hpp"
-#include "Tool.hpp"
-#include "Player.hpp"
-#include "GameState.hpp"
 #include "Controller.hpp"
+#include "Date.hpp"
+#include "GameState.hpp"
+#include "Land.hpp"
+#include "Player.hpp"
+#include "Stock.hpp"
+#include "Tool.hpp"
 
 using std::map;
 
