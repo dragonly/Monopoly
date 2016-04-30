@@ -415,13 +415,6 @@ namespace monopoly {
             gs.today.nextDay();
         }
     }
-//    toolMap[ToolType::MAGIC_DICE] = "遥控骰子";
-//    toolMap[ToolType::ROADBLOCK] = "路障";
-//    toolMap[ToolType::TURNING_CARD] = "转向卡";
-//    toolMap[ToolType::AVERAGE_CARD] = "均富卡";
-//    toolMap[ToolType::BUY_CARD] = "购地卡";
-//    toolMap[ToolType::REMOVE_CARD] = "拆迁卡";
-//    toolMap[ToolType::MONSTER_CARD] = "怪兽卡";
     
     void Controller::useTool(int i) {
         Player &player = gs.currentPlayer();
@@ -484,8 +477,6 @@ namespace monopoly {
                                 break;
                             }
                         }
-                        gs.board[x][y].name = gc.IlandMap[gs.board[x][y].landType];
-                        gs.board[x][y].owner = "none";
                         gs.board[x][y].level = 1;
                     }
                 }
@@ -494,7 +485,17 @@ namespace monopoly {
                 break;
             case ToolType::MONSTER_CARD:
             {
-                
+                int x, y;
+                int streetNum = gs.board[player.x][player.y].street;
+                for (auto i : gs.streets[streetNum]) {
+                    x = gs.road[i].pos.first;
+                    y = gs.road[i].pos.second;
+                    if (gs.board[x][y].owner != "none") {
+                        gs.board[x][y].name = gc.IlandMap[gs.board[x][y].landType];
+                        gs.board[x][y].owner = "none";
+                        gs.board[x][y].level = 1;
+                    }
+                }
                 gs.state = GS::normal;
             }
                 break;
