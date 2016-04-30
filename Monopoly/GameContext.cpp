@@ -88,6 +88,11 @@ namespace monopoly {
         gs.players.push_back(Player("player1", toolMap));
         gs.players.push_back(Player("player2", toolMap));
         
+        gs.players[0].cash = 1000;
+        gs.players[0].deposit = 1000;
+        gs.players[1].cash = 1000;
+        gs.players[1].deposit = 1000;
+        
         gs.players[0].addTool(ToolType::ROADBLOCK);
         gs.players[0].addTool(ToolType::MAGIC_DICE);
         gs.players[0].addTool(ToolType::AVERAGE_CARD);

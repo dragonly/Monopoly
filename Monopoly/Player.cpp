@@ -15,7 +15,7 @@ namespace monopoly {
         prePos = 0;
         x = 0;
         y = 0;
-        cash = 1000;
+        cash = 0;
         deposit = 0;
         coupon = 0;
         stepsLeft = 0;
@@ -32,6 +32,12 @@ namespace monopoly {
         vector<Tool>::iterator it = tools.begin();
         for (int j = 0; j < i; j++, it++) ;
         tools.erase(it);
+    }
+    
+    void Player::dropLand(int i) {
+        vector<pair<int, int>>::iterator it = vPos.begin();
+        for (int j = 0; j < i; j++, it++) ;
+        vPos.erase(it);
     }
     
     ostream& operator <<(ostream& os, Player& player) {

@@ -97,7 +97,7 @@ namespace monopoly {
                 }
                 else if (strlen(cmd) == 1 && cmd[0] >= 48/*0*/ && cmd[0] < 48 + count) {
                     const Tool &tool = player.tools[atoi(cmd)];
-                    gs.message = string("你使用了道具: ") + cmd + tool.name;
+                    gs.message = string("你使用了道具: ") + tool.name;
                     useTool(atoi(cmd));
                     return;
                 }
@@ -182,6 +182,7 @@ namespace monopoly {
                                 land.owner = player.name;
                                 land.name = player.name + "Land" + to_string(land.level);
                                 player.cash -= 200;
+                                player.vPos.push_back(land.pos);
                             }
                         }
                         else if (land.owner == player.name) { // 升级房屋
@@ -374,58 +375,101 @@ namespace monopoly {
                     }
                     nextTurn();
                 }
-            }
-                break;
+            } break;
             case LandType::gift:
             {
                 int r = static_cast<int>(rand() % 7);
                 player.addTool(static_cast<ToolType>(r));
                 gs.message += "获得随机道具: " + GREEN + player.toolMap[static_cast<ToolType>(r)] + NC;
                 nextTurn();
-            }
-                break;
+            } break;
             case LandType::bank:
             {
                 gs.message += "请输入存款金额, 取款请输入负数";
                 gs.state = GS::bank;
-            }
-                break;
+            } break;
             case LandType::news:
             {
-                gs.message += "新闻事件: ";
-                
+                // TODO: test
+                gs.message += "新闻事件:\n";
+                int r0 = rand() % 5;
+                vector<Player>::iterator it, itMax, itMin;
+                switch (r0)
+                {
+                    // 地主称号按照土地数量计算
+                    case 0:
+                    {
+                        for (itMax = it = gs.players.begin(); it != gs.players.end(); it++) {
+                            if (it->vPos.size() > itMax->vPos.size()) {
+                                itMax = it;
+                            }
+                        }
+                        int r1 = ((rand() % 50) + 50) * static_cast<int>(itMax->vPos.size());
+                        itMax->cash += r1;
+                        gs.message += "公开表扬第一地主 " + GREEN + itMax->name + NC + ", 奖励" + BROWN + "￥" + to_string(r1) + NC;
+                    } break;
+                    case 1:
+                    {
+                        for (itMin = it = gs.players.begin(); it != gs.players.end(); it++) {
+                            if (it->vPos.size() > itMin->vPos.size()) {
+                                itMin = it;
+                            }
+                        }
+                        int r2 = ((rand() % 50) + 50) * static_cast<int>(itMin->vPos.size());
+                        itMin->cash += r2;
+                        gs.message += "公开补助土地最少者 " + GREEN + itMin->name + NC + ", 补助" + BROWN + "￥" + to_string(r2) + NC;
+                    } break;
+                    case 2:
+                    {
+                        for (it = gs.players.begin(); it != gs.players.end(); it++) {
+                            it->deposit *= 1.1;
+                        }
+                        gs.message += "银行加发储蓄红利, 每人存款增加" + RED + "10%" + NC;
+                    } break;
+                    case 3:
+                    {
+                        for (it = gs.players.begin(); it != gs.players.end(); it++) {
+                            it->deposit *= 0.9;
+                        }
+                        gs.message += "所有人缴纳财产税" + RED + "10%" + NC;
+                    } break;
+                    case 4:
+                    {
+                        int r;
+                        for (it = gs.players.begin(); it != gs.players.end(); it++) {
+                            r = static_cast<int>(rand() % 7);
+                            it->addTool(static_cast<ToolType>(r));
+                            gs.message += GREEN + it->name + NC + "获得随机道具: " + BROWN + player.toolMap[static_cast<ToolType>(r)] + NC + "\n";
+                        }
+                    } break;
+                }
                 nextTurn();
-            }
-                break;
+            } break;
             case LandType::toolStore:
             {
                 gs.message += "进入道具店\n";
                 gs.message += "请选择你想要购买的道具(花费"+BROWN+"1"+NC+"点券)\n";
                 gs.message += LBLUE + "0.路障, 1.遥控骰子, 2.均富卡, 3.转向卡, 4.滞留卡, 5.拆迁卡, 6.怪兽卡" + NC;
                 gs.state = GS::toolStore;
-            }
-                break;
+            } break;
             case LandType::blank:
             {
                 gs.message += "这里什么也没有";
                 nextTurn();
-            }
-                break;
+            } break;
             case LandType::lottery:
             {
                 gs.message += "彩票";
                 nextTurn();
-            }
-                break;
+            } break;
             case LandType::coupon:
             {
                 int coupon = ((rand() % 15) + 1) / 5; // 获得0~2点券
                 player.coupon += coupon;
                 gs.message += "获得点券" + YELLOW + to_string(coupon) + NC;
                 nextTurn();
-            }
-                break;
-            default:
+            } break;
+            case LandType::VOID:
                 break;
         }
     }
@@ -444,6 +488,12 @@ namespace monopoly {
             }
             gs.today.nextDay();
         }
+        if (gs.today.d[2] == 1) { // 月初发钱
+            vector<Player>::iterator it;
+            for (it = gs.players.begin(); it != gs.players.end(); it++) {
+                it->deposit *= 1.1;
+            }
+        }
     }
     
     void Controller::useTool(int i) {
@@ -454,21 +504,18 @@ namespace monopoly {
             {
                 gs.message += "\n请输入前进步数 (1 ~ 6)";
                 gs.currentPlayer().usingMagicDice = true;
-            }
-                break;
+            } break;
             case ToolType::ROADBLOCK:
             {
                 gs.message += "\n请输入放置路障的位置 (-8 ~ 8)";
                 gs.currentPlayer().usingRoadblock = true;
-            }
-                break;
+            } break;
             case ToolType::TURNING_CARD:
             {
                 gs.message += "\n使用了转向卡";
                 player.direction = !player.direction;
                 gs.state = GS::normal;
-            }
-                break;
+            } break;
             case ToolType::AVERAGE_CARD:
             {
                 int sum = 0;
@@ -483,15 +530,13 @@ namespace monopoly {
                 }
                 gs.message += "\n所有人的现金被平均分了";
                 gs.state = GS::normal;
-            }
-                break;
+            } break;
             case ToolType::STAY_CARD:
             {
                 gs.message += "\n原地停留一回合";
                 gs.state = GS::normal;
                 handleEvents();
-            }
-                break;
+            } break;
             case ToolType::REMOVE_CARD:
             {
                 int x, y;
@@ -504,6 +549,7 @@ namespace monopoly {
                         for (int j = 0; j < gs.players.size(); j++) {
                             if (gs.players[j].name == gs.board[x][y].owner) {
                                 gs.players[j].cash += gs.board[x][y].level * gs.board[x][y].basePrice * 1.5;
+                                gs.players[j].dropLand(i);
                                 break;
                             }
                         }
@@ -511,8 +557,7 @@ namespace monopoly {
                     }
                 }
                 gs.state = GS::normal;
-            }
-                break;
+            } break;
             case ToolType::MONSTER_CARD:
             {
                 int x, y;
@@ -527,10 +572,7 @@ namespace monopoly {
                     }
                 }
                 gs.state = GS::normal;
-            }
-                break;
-            default:
-                break;
+            } break;
         }
         player.dropTool(i);
     }

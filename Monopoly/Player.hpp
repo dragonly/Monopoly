@@ -19,6 +19,7 @@ using std::string;
 using std::ostream;
 using std::map;
 using std::vector;
+using std::pair;
 
 namespace monopoly {
     
@@ -30,6 +31,7 @@ namespace monopoly {
         int prePos;
         int x, y;
         vector<Tool> tools;
+        vector<pair<int, int>> vPos;
         int cash; // 现金
         int deposit; // 存款
         int coupon; // 点券
@@ -42,6 +44,7 @@ namespace monopoly {
         Player(string, map<ToolType, string>);
         void addTool(ToolType);
         void dropTool(int);
+        void dropLand(int);
     };
     ostream& operator <<(ostream&, Player&);
 }
