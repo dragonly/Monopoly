@@ -31,6 +31,7 @@ namespace monopoly {
             streets[road[i].street].push_back(i);
         }
         
+        state = GS::normal;
         error = false;
         gameover = false;
         message = "";

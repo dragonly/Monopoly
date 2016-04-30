@@ -256,11 +256,16 @@ namespace monopoly {
             }
             case GS::stock:
             {
-                if (strlen(cmd) != 5 || cmd[0] != 'b' || cmd[0] != 's') {
+                if (cmd[0] == 'x') {
+                    gs.message += "取消操作";
+                    gs.state = GS::normal;
+                    return;
+                }
+                if ((cmd[0] != 'b' && cmd[0] != 's') || cmd[1] != ' ' || cmd[2] < '0' || cmd[2] > '9' || cmd[3] != ' ') {
                     gs.errMsg = "不是有效的买入和卖出指令";
                     break;
                 }
-                Stock &&stock = gs.stockMarket.find(string(&cmd[2]));
+                Stock &&stock = gs.stockMarket.find(string(&cmd[2], 1));
                 if (stock.serial == "none") {
                     gs.errMsg = "没有这支股票";
                     break;

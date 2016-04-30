@@ -202,10 +202,10 @@ namespace monopoly {
         cout << "|  编号  |  名字  |  单价  |  持有  |" << endl;
         vector<Stock>::iterator it;
         for (it = gs.stockMarket.stocks.begin(); it != gs.stockMarket.stocks.end(); it++) {
-            cout << "|   " << it->serial << "    |   " << it->name << "    g|    " << it->price << "   |    " << gs.stockMarket.playerMap[gs.currentPlayer().name][it->serial] << "   |" << endl;
+            cout << "|   " << it->serial << "    |   " << it->name << "    |    " << it->price << "   |    " << gs.stockMarket.playerMap[gs.currentPlayer().name][it->serial] << "   |" << endl;
             cout << "--------------------------------------" << endl;
         }
-        
+        cout << endl << "输入 b x n | s x n 格式进行交易" << endl;
     }
     
     void GameContext::drawGame() {
@@ -233,10 +233,25 @@ namespace monopoly {
             if (gs.error) {
                 cout << endl << RED << gs.errMsg << NC << endl;
             }
-            cout << gs.message << endl;
+            cout << BROWN << gs.message << NC << endl;
             gs.message = "";
             cout << "> ";
-            cin >> cmd;
+            if (gs.state == GS::stock) {
+                char c1[10], c2[10];
+                int c3;
+                cin >> c1 >> c2 >> c3;
+                cmd[0] = c1[0];
+                cmd[1] = ' ';
+                cmd[2] = c2[0];
+                cmd[3] = ' ';
+                string tmp = to_string(c3);
+                for (int i = 0; i < tmp.size(); i++) {
+                    cmd[i+4] = tmp[i];
+                }
+            }
+            else {
+                cin >> cmd;
+            }
         }
     }
 }

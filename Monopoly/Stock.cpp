@@ -14,16 +14,16 @@ namespace monopoly {
     }
     
     StockMarket::StockMarket() {
-        stocks.push_back(Stock("1", "A", 1));
-        stocks.push_back(Stock("2", "B", 2));
-        stocks.push_back(Stock("3", "C", 3));
-        stocks.push_back(Stock("4", "D", 4));
-        stocks.push_back(Stock("5", "E", 5));
-        stocks.push_back(Stock("6", "F", 6));
-        stocks.push_back(Stock("7", "G", 7));
-        stocks.push_back(Stock("8", "H", 8));
-        stocks.push_back(Stock("9", "I", 9));
-        stocks.push_back(Stock("a", "J", 10));
+        stocks.push_back(Stock("0", "A", 1));
+        stocks.push_back(Stock("1", "B", 2));
+        stocks.push_back(Stock("2", "C", 3));
+        stocks.push_back(Stock("3", "D", 4));
+        stocks.push_back(Stock("4", "E", 5));
+        stocks.push_back(Stock("5", "F", 6));
+        stocks.push_back(Stock("6", "G", 7));
+        stocks.push_back(Stock("7", "H", 8));
+        stocks.push_back(Stock("8", "I", 9));
+        stocks.push_back(Stock("9", "J", 10));
     }
     
     Stock StockMarket::find(string serial) {
