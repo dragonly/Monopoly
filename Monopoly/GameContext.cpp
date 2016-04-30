@@ -80,6 +80,8 @@ namespace monopoly {
             gs.board[i][j].name = gs.road[k].name;
             gs.board[i][j].landType = gs.road[k].landType;
             gs.board[i][j].street = gs.road[k].street;
+            gs.board[i][j].pos.first = i;
+            gs.board[i][j].pos.second = j;
         }
         
         controller = new Controller(*this);
@@ -171,8 +173,17 @@ namespace monopoly {
 //        }
         cout << endl;
         
+        // TODO: 房产
+        vector<pair<int, int>>::iterator itPos;
+        int houseProperty = 0;
+        Land landTemp;
+        for (itPos = player.vPos.begin(); itPos != player.vPos.end(); itPos++) {
+            landTemp = gs.board[itPos->first][itPos->second];
+            houseProperty += landTemp.basePrice * landTemp.level;
+        }
+        
         cout << "玩家信息: ";
-        cout << BROWN << "现金￥" << player.cash << ", 存款￥" << player.deposit << ", 点券 " << player.coupon;
+        cout << BROWN << "现金￥" << player.cash << ", 存款￥" << player.deposit << ", 点券 " << player.coupon << ", 房产 " << to_string(houseProperty);
         cout << NC << "\n          " << LBLUE << "道具: ";
         
         vector<Tool>::iterator it = player.tools.begin();

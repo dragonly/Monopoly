@@ -9,7 +9,7 @@
 #include "Player.hpp"
 
 namespace monopoly {
-    Player::Player(string name, map<ToolType, string> m): name(name), toolMap(m) {
+    Player::Player(string name, map<ToolType, string> m): name(name), toolMap(m), vPos() {
         direction = true;
         curPos = 0;
         prePos = 0;

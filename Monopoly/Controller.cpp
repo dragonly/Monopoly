@@ -42,8 +42,8 @@ namespace monopoly {
                     gs.state = GS::stock;
                 }
                 else if (strcmp(cmd, "r") == 0) {
-                    gs.lastRoll = static_cast<int>(rand() % 3) + 1;
-                    gs.lastRoll = 3; // TODO: remove
+                    gs.lastRoll = static_cast<int>(rand() % 6) + 1;
+//                    gs.lastRoll = 3; // TODO: remove
                     gs.message += "玩家" + GREEN + gs.currentPlayer().name + NC + "刚刚掷出了 " + LCYAN + to_string(gs.lastRoll) + NC + "\n";
                     movePlayerWithAnimation(gs.lastRoll);
                     handleEvents();
@@ -94,7 +94,7 @@ namespace monopoly {
                     }
                     else {
                         gs.errMsg = RED + "无效的位置" + NC;
-                        gs.message += "\n请输入放置路障的位置 (-8 ~ 8)";
+                        gs.message += "请输入放置路障的位置 (-8 ~ 8)";
                         break;
                     }
                 }
@@ -394,12 +394,12 @@ namespace monopoly {
             case LandType::land:
             {
                 if (land.owner == "none") { // 无主之地
-                    gs.message += "\n当前土地闲置, 是否花费 ￥200 购买?(y/n)";
+                    gs.message += "当前土地闲置, 是否花费 ￥200 购买?(y/n)";
                     gs.state = GS::buy;
                 }
                 else if (land.owner == player.name) { // 升级房屋
                     gs.message += "房屋当前等级" + RED + to_string(land.level) + NC;
-                    gs.message += "\n是否花费 ￥200 升级?(y/n)";
+                    gs.message += "是否花费 ￥200 升级?(y/n)";
                     gs.state = GS::buy;
                 }
                 else {
@@ -548,17 +548,17 @@ namespace monopoly {
         switch(tool.type) {
             case ToolType::MAGIC_DICE:
             {
-                gs.message += "\n请输入前进步数 (1 ~ 6)";
+                gs.message += "请输入前进步数 (1 ~ 6)";
                 gs.currentPlayer().usingMagicDice = true;
             } break;
             case ToolType::ROADBLOCK:
             {
-                gs.message += "\n请输入放置路障的位置 (-8 ~ 8)";
+                gs.message += "请输入放置路障的位置 (-8 ~ 8)";
                 gs.currentPlayer().usingRoadblock = true;
             } break;
             case ToolType::TURNING_CARD:
             {
-                gs.message += "\n使用了转向卡";
+                gs.message += "使用了转向卡";
                 player.direction = !player.direction;
                 gs.state = GS::normal;
             } break;
@@ -574,12 +574,12 @@ namespace monopoly {
                 for (it = gs.players.begin(); it != gs.players.end(); it++) {
                     it->cash = average;
                 }
-                gs.message += "\n所有人的现金被平均分了";
+                gs.message += "所有人的现金被平均分了";
                 gs.state = GS::normal;
             } break;
             case ToolType::STAY_CARD:
             {
-                gs.message += "\n原地停留一回合";
+                gs.message += "原地停留一回合";
                 gs.state = GS::normal;
                 handleEvents();
             } break;
