@@ -38,6 +38,9 @@ namespace monopoly {
                     gs.message += "请输入步数(-9 ~ 9), 负号表示反向于前进方向: (输入 " + RED + "x" + NC + " 返回)";
                     gs.state = GS::step;
                 }
+                else if (strcmp(cmd, "m") == 0) {
+                    gs.state = GS::stock;
+                }
                 else if (strcmp(cmd, "r") == 0) {
                     gs.lastRoll = static_cast<int>(rand() % 3) + 1;
                     gs.lastRoll = 3; // TODO: remove
@@ -251,6 +254,34 @@ namespace monopoly {
                 }
                 break;
             }
+            case GS::stock:
+            {
+                if (strlen(cmd) != 5 || cmd[0] != 'b' || cmd[0] != 's') {
+                    gs.errMsg = "不是有效的买入和卖出指令";
+                    break;
+                }
+                Stock &&stock = gs.stockMarket.find(string(&cmd[2]));
+                if (stock.serial == "none") {
+                    gs.errMsg = "没有这支股票";
+                    break;
+                }
+                int n = atoi(&cmd[4]);
+                Player &player = gs.currentPlayer();
+                if (player.deposit + player.cash < n * stock.price) {
+                    gs.errMsg = "存款和现金总额不足";
+                    break;
+                }
+                
+                gs.stockMarket.buy(player.name, stock.serial, n);
+                player.deposit -= n * stock.price;
+                if (player.deposit < 0) {
+                    player.cash += player.deposit;
+                    player.deposit = 0;
+                }
+                gs.message += "购买成功";
+                gs.state = GS::normal;
+                return;
+            } break;
         }
         gs.error = true;
     }

@@ -15,19 +15,21 @@
 #include "Land.hpp"
 #include "Player.hpp"
 #include "Date.hpp"
+#include "Stock.hpp"
 
 using std::vector;
 using std::string;
 
 namespace monopoly {
     enum class GS {
-        normal, tool, step, buy, bank, toolStore
+        normal, tool, step, buy, bank, toolStore, stock
     };
     
     class GameState {
     public:
         vector<Land> road;
         vector<int> streets[8];
+        StockMarket stockMarket;
         Land board[10][20];
         GS state;
         bool error;

@@ -191,6 +191,7 @@ namespace monopoly {
         << "t(tool) - 道具列表" << endl
         << "s(step) - 查看前后若干步的具体信息" << endl
 //        << "i(info) - 查看玩家资产信息" << endl
+        << "m(stockMarket) - 查看股市" << endl
         << "r(roll) - 掷骰子" << endl
         << "gg(GG)  - 是在下输了" << endl
         << "---------------------------------------" << endl;

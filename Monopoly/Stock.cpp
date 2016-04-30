@@ -26,6 +26,15 @@ namespace monopoly {
         stocks.push_back(Stock("a", "J", 10));
     }
     
+    Stock StockMarket::find(string serial) {
+        for (vector<Stock>::iterator it = stocks.begin(); it != stocks.end(); it++) {
+            if (it->serial == serial) {
+                return *it;
+            }
+        }
+        return Stock("none", "none", -1);
+    }
+    
     void StockMarket::buy(string playerName, string serial, int n) {
         if (playerMap.find(playerName) == playerMap.end())
         {

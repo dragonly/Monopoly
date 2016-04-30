@@ -35,6 +35,7 @@ namespace monopoly {
         map<string, map<string, int>> playerMap;
         
         StockMarket();
+        Stock find(string);
         void buy(string, string, int);
         void sell(string, string, int);
     };

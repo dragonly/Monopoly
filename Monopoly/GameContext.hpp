@@ -18,7 +18,6 @@
 #include "GameState.hpp"
 #include "Land.hpp"
 #include "Player.hpp"
-#include "Stock.hpp"
 #include "Tool.hpp"
 
 using std::map;
