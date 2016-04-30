@@ -32,6 +32,7 @@ namespace monopoly {
         vector<Tool> tools;
         int cash;
         int deposit;
+        int coupon;
         bool done; // 回合行动结束标志
         bool usingMagicDice; // 正在使用遥控骰子的标识
         bool usingRoadblock; // 正在使用路障的标识

@@ -17,6 +17,7 @@ namespace monopoly {
         y = 0;
         cash = 1000;
         deposit = 0;
+        coupon = 0;
         done = false;
         usingMagicDice = false;
         usingRoadblock = false;

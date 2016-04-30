@@ -41,7 +41,7 @@ namespace monopoly {
                 else if (strcmp(cmd, "r") == 0) {
                     gs.lastRoll = static_cast<int>(rand() % 3) + 1;
                     gs.lastRoll = 3; // TODO: remove
-                    gs.message += "玩家" + GREEN + gs.currentPlayer().name + NC + "刚刚掷出了 " + LCYAN + to_string(gs.lastRoll) + "\n";
+                    gs.message += "玩家" + GREEN + gs.currentPlayer().name + NC + "刚刚掷出了 " + LCYAN + to_string(gs.lastRoll) + NC + "\n";
                     movePlayerWithAnimation(gs.lastRoll);
                     handleEvents();
                 }
@@ -95,12 +95,6 @@ namespace monopoly {
                         break;
                     }
                 }
-//                else if (player.usingStayCard) {
-//                    handleEvents();
-//                    gs.state = GS::normal;
-//                    player.usingStayCard = false;
-//                    return;
-//                }
                 else if (strlen(cmd) == 1 && cmd[0] >= 48/*0*/ && cmd[0] < 48 + count) {
                     const Tool &tool = player.tools[atoi(cmd)];
                     gs.message = string("你选择了道具: ") + cmd + tool.name;
@@ -113,6 +107,33 @@ namespace monopoly {
                 }
                 else {
                     gs.errMsg = RED + "没有这个工具 :(" + NC;
+                    break; // error
+                }
+            }
+            case GS::toolStore:
+            {
+                Player& player = gs.currentPlayer();
+                int n = atoi(cmd);
+                if (n > -1 && n < 7) {
+                    if (player.coupon == 0) {
+                        gs.errMsg = "点券不足";
+                        gs.state = GS::normal;
+                        nextTurn();
+                        break;
+                    }
+                    else {
+                        player.addTool(static_cast<ToolType>(n));
+                        player.coupon--;
+                        gs.message += "成功购买道具: " + GREEN + player.toolMap[static_cast<ToolType>(n)] + NC;
+                        gs.state = GS::normal;
+                        nextTurn();
+                        return;
+                    }
+                }
+                else {
+                    gs.errMsg = "没有这个道具";
+                    gs.message += "请选择你想要购买的道具(花费"+BROWN+"1"+NC+"点券)\n";
+                    gs.message += LBLUE + "0.路障, 1.遥控骰子, 2.均富卡, 3.转向卡, 4.滞留卡, 5.拆迁卡, 6.怪兽卡" + NC;
                     break; // error
                 }
             }
@@ -221,10 +242,6 @@ namespace monopoly {
                     nextTurn();
                     return;
                 }
-            }
-            default:
-            {
-                
             }
         }
         gs.error = true;
@@ -357,7 +374,7 @@ namespace monopoly {
                 }
             }
                 break;
-            case LandType::toolStore:
+            case LandType::gift:
             {
                 int r = static_cast<int>(rand() % 7);
                 player.addTool(static_cast<ToolType>(r));
@@ -377,10 +394,12 @@ namespace monopoly {
                 nextTurn();
             }
                 break;
-            case LandType::gift:
+            case LandType::toolStore:
             {
-                gs.message += "赠送道具店";
-                nextTurn();
+                gs.message += "进入道具店\n";
+                gs.message += "请选择你想要购买的道具(花费"+BROWN+"1"+NC+"点券)\n";
+                gs.message += LBLUE + "0.路障, 1.遥控骰子, 2.均富卡, 3.转向卡, 4.滞留卡, 5.拆迁卡, 6.怪兽卡" + NC;
+                gs.state = GS::toolStore;
             }
                 break;
             case LandType::blank:
