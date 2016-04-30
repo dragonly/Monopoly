@@ -245,9 +245,11 @@ namespace monopoly {
                 cmd[2] = c2[0];
                 cmd[3] = ' ';
                 string tmp = to_string(c3);
-                for (int i = 0; i < tmp.size(); i++) {
+                int i;
+                for (i = 0; i < tmp.size(); i++) {
                     cmd[i+4] = tmp[i];
                 }
+                cmd[i+4] = '\0';
             }
             else {
                 cin >> cmd;

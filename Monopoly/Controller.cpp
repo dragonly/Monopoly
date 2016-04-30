@@ -277,13 +277,20 @@ namespace monopoly {
                     break;
                 }
                 
-                gs.stockMarket.buy(player.name, stock.serial, n);
-                player.deposit -= n * stock.price;
-                if (player.deposit < 0) {
-                    player.cash += player.deposit;
-                    player.deposit = 0;
+                if (cmd[0] == 'b') {
+                    gs.stockMarket.buy(player.name, stock.serial, n);
+                    player.deposit -= n * stock.price;
+                    if (player.deposit < 0) {
+                        player.cash += player.deposit;
+                        player.deposit = 0;
+                    }
+                    gs.message += "购买成功";
                 }
-                gs.message += "购买成功";
+                else {
+                    gs.stockMarket.sell(player.name, stock.serial, n);
+                    player.cash += n * stock.price;
+                    gs.message += "出售成功";
+                }
                 gs.state = GS::normal;
                 return;
             } break;
