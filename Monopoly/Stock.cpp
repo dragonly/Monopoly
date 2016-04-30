@@ -53,4 +53,12 @@ namespace monopoly {
         playerMap[playerName][serial] -= n;
         if (playerMap[playerName][serial] < 0) playerMap[playerName][serial] = 0;
     }
+    
+    void StockMarket::update() {
+        double ratio;
+        for (vector<Stock>::iterator it = stocks.begin(); it != stocks.end(); it++) {
+            ratio = static_cast<double>(rand() % 100) / 1000;
+            it->price *= (1 + ratio);
+        }
+    }
 }

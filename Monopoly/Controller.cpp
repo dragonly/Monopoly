@@ -436,6 +436,7 @@ namespace monopoly {
                 // TODO: test
                 gs.message += "新闻事件:\n";
                 int r0 = rand() % 5;
+                r0 = 3;
                 vector<Player>::iterator it, itMax, itMin;
                 switch (r0)
                 {
@@ -530,8 +531,10 @@ namespace monopoly {
                 p.done = false;
             }
             gs.today.nextDay();
+            gs.stockMarket.update();
         }
-        if (gs.today.d[2] == 1) { // 月初发钱
+        if (gs.today.d[2] == 1) {
+            // 月初发钱
             vector<Player>::iterator it;
             for (it = gs.players.begin(); it != gs.players.end(); it++) {
                 it->deposit *= 1.1;

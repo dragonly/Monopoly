@@ -12,6 +12,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <cstdlib>
 
 namespace monopoly {
     
@@ -38,6 +39,7 @@ namespace monopoly {
         Stock find(string);
         void buy(string, string, int);
         void sell(string, string, int);
+        void update();
     };
     
 }
